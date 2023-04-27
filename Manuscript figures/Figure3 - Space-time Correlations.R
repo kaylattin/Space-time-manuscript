@@ -1,3 +1,11 @@
+############################################################################
+############################################################################
+###                                                                      ###
+###            R CODE: PLOTTING SPACE-TIME SLOPE CORRELATIONS            ###
+###                                                                      ###
+############################################################################
+############################################################################
+
 # Load in libraries
 library(tidyverse)
 library(ggpubr)
@@ -7,11 +15,17 @@ library(gridExtra)
 library(rethinking)
 library(shinystan)
 
+##################################################################
+##                       SPECIES RICHNESS                       ##
+##################################################################
 
-## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ## RICHNESS ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-load("Output_RFsub_FINAL.RData")
+##----------------
+##  Forest Birds  
+##----------------
 
-# Extract parameters for ggplot
+load("Output_RFsub_ALL.RData") # Load in dataset
+
+# Extract model parameters for ggplot
 b_space <- summary(stanfit, pars = "b_space") # spatial slopes
 b_time <- summary(stanfit, pars = "b_time") # temporal slopes
 avg_space <- summary(stanfit, pars = "avg_b_space")
@@ -23,10 +37,11 @@ y <- b_time$summary[,1]
 avS1 <- avg_space$summary[,1]
 avT1 <- avg_time$summary[,1]
 
-#### GGPLOT ####
-r <- data.frame(x, y)
+### GGPLOT FIGURE ------------------------------------------------
 
-## GGplot object
+r <- data.frame(x, y) # array of x and y values
+
+## ggplot object
 p1 <- ggplot(r, mapping = aes(x, y)) +
   geom_point(aes(x, y, color = "Forest species"),
              size = 3,
@@ -49,11 +64,13 @@ p1 <- p1 + geom_point(aes(x=avS1, y=avT1), pch = 10, size = 7, stroke = 1, colou
   geom_segment(aes(x=avS1, y=avT1, xend = avS1, yend = -Inf), linetype = "dashed")
 p1
 
+##----------------------
+##  Open-Habitat Birds  
+##----------------------
 
-## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ## RICHNESS - OPEN HABITATS BIRDS ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-load("Output_ROsub_FINAL.RData")
+load("Output_ROsub_ALL.RData") # Load in dataset
 
-# Extract parameters for ggplot
+# Extract model parameters for ggplot
 b_space <- summary(stanfit, pars = "b_space") # spatial slopes
 b_time <- summary(stanfit, pars = "b_time") # temporal slopes
 avg_space <- summary(stanfit, pars = "avg_b_space")
@@ -65,10 +82,11 @@ y <- b_time$summary[,1]
 avS2 <- avg_space$summary[,1]
 avT2 <- avg_time$summary[,1]
 
-#### GGPLOT ####
+### GGPLOT FIGURE ------------------------------------------------
+
 r <- data.frame(x, y)
 
-## GGplot object
+## ggplot object
 p2 <- p1 +   geom_point(data = r,
                         aes(x, y, color = "Open-habitat species"),
                         size = 3,
@@ -93,14 +111,22 @@ p2 <- p2 + geom_point(aes(x=avS1, y=avT1), pch = 10, size = 7, stroke = 1, colou
         axis.text = element_text(size = 18)) + labs(title = "Species richness") + theme(legend.position = "bottom")
 p2
 
- # Save Richness plot
- ggsave(filename = "~/space-for-time/FINAL_SpaceTimeSlopes_RICHNESS.png", device = "png", plot = p2,
+ # Save Species Richness Plot
+ ggsave(filename = "~/Space-time-manuscript/ALL_SpaceTimeSlopes_RICHNESS.png", device = "png", plot = p2,
         width = 30, height = 30, units = "cm")
  
  
+ ##----------------------------------------------------------------------------
  
- ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ## ABUNDANCE - FOREST ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- load("Output_TFsub_FINAL.RData")
+ #################################################################
+ ##                       TOTAL ABUNDANCE                       ##
+ #################################################################
+ 
+ ##----------------
+ ##  Forest Birds  
+ ##----------------
+ 
+ load("Output_TFsub_ALL.RData")
  
  # Extract parameters for ggplot
  b_space <- summary(stanfit, pars = "b_space") # spatial slopes
@@ -114,10 +140,11 @@ p2
  avS1 <- avg_space$summary[,1]
  avT1 <- avg_time$summary[,1]
  
- #### GGPLOT ####
+ ### GGPLOT FIGURE ------------------------------------------------
+ 
  r <- data.frame(x, y)
  
- ## GGplot object
+ ## ggplot object
  p1 <- ggplot(r, mapping = aes(x, y)) +
    geom_point(aes(x, y, color = "Forest species"),
               size = 3,
@@ -141,8 +168,11 @@ p2
  p1
  
  
- ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ## ABUNDANCE - OPEN-HABITAT ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- load("Output_TOsub_FINAL.RData")
+ ##----------------------
+ ##  Open-Habitat Birds  
+ ##----------------------
+ 
+ load("Output_TOsub_ALL.RData")
  
  # Extract parameters for ggplot
  b_space <- summary(stanfit, pars = "b_space") # spatial slopes
@@ -184,7 +214,12 @@ p2
          axis.text = element_text(size = 18)) + labs(title = "Total abundance") + theme(legend.position = "bottom")
  p2
  
- # Save abundance plot
- ggsave(filename = "~/space-for-time/FINAL_SpaceTimeSlopes_ABUNDANCE.png", device = "png", plot = p2,
-        width = 30, height = 30, units = "cm")                       
+ # Save Total Abundance Plot
+ ggsave(filename = "~/Space-time-manuscript/ALL_SpaceTimeSlopes_ABUNDANCE.png", device = "png", plot = p2,
+        width = 30, height = 30, units = "cm")  
+ 
+ 
+ ### END OF CODE ---------------------------------------------------------------
+ 
+ 
  

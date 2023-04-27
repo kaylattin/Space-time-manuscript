@@ -9,7 +9,7 @@ library(shinystan)
 
 
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ## RICHNESS ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-load("Output_RF_200km_FINAL.RData")
+load("Output_RF_200km_ALL.RData")
 
 # Extract parameters for ggplot
 b_space <- summary(stanfit, pars = "b_space") # spatial slopes
@@ -51,7 +51,7 @@ p1
 
 
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ## RICHNESS - OPEN HABITATS BIRDS ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-load("Output_RO_200km_FINAL.RData")
+load("Output_RO_200km_ALL.RData")
 
 # Extract parameters for ggplot
 b_space <- summary(stanfit, pars = "b_space") # spatial slopes
@@ -94,13 +94,13 @@ p2 <- p2 + geom_point(aes(x=avS1, y=avT1), pch = 10, size = 7, stroke = 1, colou
 p2
 
 # Save Richness plot
-ggsave(filename = "~/space-for-time/FINAL_SpaceTimeSlopes_RICHNESS_200km.png", device = "png", plot = p2,
+ggsave(filename = "~/Space-time-manuscript/ALL_SpaceTimeSlopes_RICHNESS_200km.png", device = "png", plot = p2,
        width = 30, height = 30, units = "cm")
 
 
 
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ## ABUNDANCE - FOREST ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-load("Output_TF_200km_FINAL.RData")
+load("Output_TF_200km_ALL.RData")
 
 # Extract parameters for ggplot
 b_space <- summary(stanfit, pars = "b_space") # spatial slopes
@@ -142,7 +142,7 @@ p1
 
 
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ## ABUNDANCE - OPEN-HABITAT ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-load("Output_TO_200km_FINAL.RData")
+load("Output_TO_200km_ALL.RData")
 
 # Extract parameters for ggplot
 b_space <- summary(stanfit, pars = "b_space") # spatial slopes
@@ -185,5 +185,5 @@ p2 <- p2 + geom_point(aes(x=avS1, y=avT1), pch = 10, size = 7, stroke = 1, colou
 p2
 
 # Save abundance plot
-ggsave(filename = "~/space-for-time/FINAL_SpaceTimeSlopes_ABUNDANCE_200km.png", device = "png", plot = p2,
+  ggsave(filename = "~/Space-time-manuscript/ALL_SpaceTimeSlopes_ABUNDANCE_200km.png", device = "png", plot = p2,
        width = 30, height = 30, units = "cm")                       

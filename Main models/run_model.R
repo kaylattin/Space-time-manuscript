@@ -1,4 +1,12 @@
-## load up stuff
+############################################################################
+############################################################################
+###                                                                      ###
+###             R CODE: RUNNING DATASETS THROUGH RSTAN MODEL             ###
+###                                                                      ###
+############################################################################
+############################################################################
+
+# Load in libaries
 library(tidyverse)
 library(cmdstanr)
 library(shinystan)
@@ -6,48 +14,58 @@ library(rstan)
 library(bayesplot)
 library(rethinking)
 
-rm(list = ls())
-gc()
+setwd("~/Space-time-manuscript") # Set working directory
+rm(list = ls()) # Clean environment
+gc() # Clean garbage
 
-d <- read.csv("~/space-for-time/FinalDataset_TF_200km.csv")
+d <- read.csv("~/Space-time-manuscript/FinalDataset_RFsub_ALL.csv") # Load in dataset
 
-#d2 <- d %>% filter(space.time == 2)
+##----------------------------------------------------------------
+##                        DATA PREPARATION                       -
+##----------------------------------------------------------------
 
-#corr <- cor(d2$NumStops, d2$Forest.cover, method = "pearson")
-#boxplot(d2$Forest.cover ~ d2$NumStops, main = paste("Spatial, Pearson's R =", corr, sep = " "), ylab = "% forest cover",
-        #xlab = "# Open Stops")
+##-------------------------
+##  Initial data plotting  
+##-------------------------
 
-# Initial data plotting ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Species richness
 hist(d$Richness)
 min(d$Richness)
 max(d$Richness)
 mean(d$Richness)
 median(d$Richness)
 
+# Total abundance
 hist(d$TA)
 min(d$TA)
 max(d$TA)
 mean(d$TA)
 median(d$TA)
 
-## Set up the data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##----------------------------
+##  Preparing data for input  
+##----------------------------
 
-## Create space and time indicators
+## Create space and time indicator variables
 d$space <- d$space.time
 d$space[which(d$space == 1)] <- 0
 d$space[which(d$space == 2)] <- 1
 
 d$time <- d$space.time
-d$time[which(d$time == 2)] <- 0
 d$time[which(d$time == 1)] <- 1
-d$ObsN <- as.integer(as.factor(d$ObsN))
+d$time[which(d$time == 2)] <- 0
 
-d$Region <- as.integer(as.factor(d$ref)) # Create integer categorical for 'region' or space-time comparison
+d$ObsN <- as.integer(as.factor(d$ObsN)) # Create integer categorical for unique observer
 
-x.seq = seq( from=min(d$Forest.cover), to = max(d$Forest.cover), length.out = 100 )
+d$Region <- as.integer(as.factor(d$ref)) # Create integer categorical for each space-time comparison
+
+x.seq = seq( from=min(d$Forest.cover), to = max(d$Forest.cover), length.out = 100 ) # Set up fake data for simulations
 xrep = c(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1)
 
-#### Input dataframe
+##----------------------------
+##  Create data input array
+##----------------------------
+
 d_slim <- list(
   ncounts = nrow(d),
   nreg = length(unique(d$Region)),
@@ -55,8 +73,8 @@ d_slim <- list(
   nst = 2,
   ndata = 100,
   
-  ta = d$TA, # turn on if running abundance model
-  #richness = d$Richness, # turn on if running richness model
+  #ta = d$TA_ALL, # turn on if running abundance model
+  richness = d$Richness_ALL, # turn on if running richness model
   spacetime = d$space.time,
   space = d$space,
   time = d$time,
@@ -70,14 +88,22 @@ d_slim <- list(
   xrep = xrep
 )
 
-# Compile the model in cmdstan  ~~~~~~~~~~~~~~~~~~~
-# file <- file.path ("AbundanceRegression.stan") # turn on if running abundance model
-file <- file.path("~/space-for-time/Rstan models/AbundanceRegressionPoisson_FINAL.stan") # turn on if running richness model
+
+##---------------------------------------------------------------
+##                          RUN MODEL                           -
+##---------------------------------------------------------------
+
+##----------------------------
+##  Compile model in cmdstan  
+##----------------------------
+
+#file <- file.path("~/Space-time-manuscript/Main models/AbundanceRegressionPoisson_FINAL.stan") # turn on if running abundance model
+file <- file.path("~/Space-time-manuscript/Main models/RichnessRegressionPoisson_FINAL.stan") # turn on if running richness model
 mod <- cmdstan_model(file, pedantic = TRUE)
 check_cmdstan_toolchain(fix = TRUE)
 
 
-# Run the model ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Run the model -------------------------------------------------
 fit <- mod$sample(
   data = d_slim,
   chains = 4,
@@ -88,33 +114,31 @@ fit <- mod$sample(
   adapt_delta = 0.99,
   max_treedepth = 18,
   step_size = 0.01,
-  output_dir = "~/space-time/cmdstan_output_files/"
+  output_dir = "~/Space-time-manuscript/cmdstan_output_files/"
 )
 
-
-# create a stanfit S4 object 
+# Create a stanfit S4 object 
 stanfit <- rstan::read_stan_csv(fit$output_files())
-  save(stanfit, file =  "Output_TF_200km_FINAL.RData")
+  save(stanfit, file =  "Output_RFsub_ALL_Resids.RData")
 
-#y <- d$Richness
-y <- d$Richness
+##----------------------------
+##  Posterior checks  
+##----------------------------
+
+# Get observed y values
+y <- d$Richness_ALL
 
 # Load up in shinystan for convergence diagnostics & posterior predictive / assumptions
 shinyfit <- as.shinystan(stanfit)
 launch_shinystan(shinyfit)
 
 # Posterior predictive check using bayesplot()
-y_rep <- as.matrix(stanfit, pars = "y_rep")
+y_rep <- as.data.frame(stanfit, pars = "y_rep")
 ppc_dens_overlay(y = y, yrep = y_rep)
-
-
-
-
 
 sims <- as.matrix(stanfit)
 head(sims)
 mcmc_areas(sims, prob = 0.9)
-
 
 fits <- stanfit %>% as_tibble() %>% rename(a_space = 'a[1,1]') %>% rename(b_space = 'b[1,1]') %>% select(a_space, b_space)
 head(fits)

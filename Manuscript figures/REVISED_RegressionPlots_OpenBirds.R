@@ -8,16 +8,15 @@ library(Cairo)
 rm(list = ls())
 gc()
 
-setwd("~/space-for-time")
 
 ### RICHNESS! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-d <- read.csv("~/space-for-time/FinalDataset_ROsub.csv")
+d <- read.csv("~/Space-time-manuscript/FinalDataset_ROsub.csv")
 
 d$Region <- as.integer(as.factor(d$ref))
 d$Obs_ID <- as.integer(as.factor(d$ObsN))
 d$Cover_std <- as.vector(scale(d$Forest.cover))
 
-load("~/space-for-time/Output_ROsub_FINAL.RData")
+load("~/Space-time-manuscript/Output_ROsub_FINAL.RData")
 draws <- rstan::extract(stanfit, pars = c("a", "b_space", "b_time", "retrans_noise", "observer", "first" ))
 avg_space <- summary(stanfit, pars = "avg_b_space")
 avg_time <- summary(stanfit, pars = "avg_b_time")
@@ -153,13 +152,13 @@ dev.off()
 rm(list = ls())
 gc()
 
-d <- read.csv("~/space-for-time/FinalDataset_TOsub.csv")
+d <- read.csv("~/Space-time-manuscript/FinalDataset_TOsub.csv")
 
 d$Region <- as.integer(as.factor(d$ref))
 d$Obs_ID <- as.integer(as.factor(d$ObsN))
 d$Cover_std <- as.vector(scale(d$Forest.cover))
 
-load("~/space-for-time/Output_TOsub_FINAL.RData")
+load("~/Space-time-manuscript/Output_TOsub_FINAL.RData")
 draws <- rstan::extract(stanfit, pars = c("a", "b_space", "b_time", "retrans_noise", "observer", "first" ))
 avg_space <- summary(stanfit, pars = "avg_b_space")
 avg_time <- summary(stanfit, pars = "avg_b_time")

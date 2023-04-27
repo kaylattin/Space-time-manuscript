@@ -130,14 +130,11 @@ generated quantities{
   for(k in 1:ncounts){
  y_rep[k] = poisson_log_rng(lambda[k]);
   }
- 
+
   
   // for(n in 1:ncounts){
     // log_lik[n] = poisson_lcdf(richness[n] | a[reg[n], spacetime[n]] + b_time[reg[n]] * time[n] * pforest[n] +  b_space[reg[n]] * space[n] * pforest[n] + observer[obs[n]] + log(stops[n]) + first[firstobs[n]] + sdnoise[n]);
     
-  // }
-  
-  
-  
-  
+  //
+
 }

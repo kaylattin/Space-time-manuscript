@@ -1,21 +1,34 @@
+###########################################################################
+###########################################################################
+###                                                                     ###
+###       R CODE: SIMULATED DATA AND SPACE-TIME SLOPE DIFFERENCES       ###
+###                                                                     ###
+###########################################################################
+###########################################################################
+
 library(bayesplot)
 library(RColorBrewer)
 library(ggplot2)
 library(ggpubr)
 
+# Set up Space-time comparison labels
 region <- vector()
 
 for( i in 1:30 ) {
   
-  region[i] <- paste("Region", i, sep = " ")
+  region[i] <- paste("Space-time Comparison", i, sep = " ")
   
 }
+
 region <- rev(region)
 
-### SIMULATED Y AS X CHANGES
+##----------------------------------------------------------------
+##                    Simulated Y as X Changes                   -
+##----------------------------------------------------------------
+
 xrep = c(0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1)
 
-load("Output_RFsub_FINAL.RData")
+load("Output_RFsub_ALL.RData")
 yrep <- as.matrix(stanfit, pars = "y_rep")
 
 yrep <- summary(stanfit, pars = "sim_space")
@@ -25,7 +38,7 @@ y_time_RF <- yrep$summary[,1]
 y_space_RF
 y_time_RF
 
-load("Output_ROsub_FINAL.RData")
+load("Output_ROsub_ALL.RData")
 yrep <- summary(stanfit, pars = "sim_space")
 y_space_RO <- yrep$summary[,1]
 yrep <- summary(stanfit, pars = "sim_time")
@@ -33,7 +46,7 @@ y_time_RO <- yrep$summary[,1]
 y_space_RO
 y_time_RO
 
-load("Output_TFsub_FINAL.RData")
+load("Output_TFsub_ALL.RData")
 yrep <- summary(stanfit, pars = "sim_space")
 y_space_TF <- yrep$summary[,1]
 yrep <- summary(stanfit, pars = "sim_time")
@@ -41,7 +54,7 @@ y_time_TF <- yrep$summary[,1]
 y_space_TF
 y_time_TF
 
-load("Output_TOsub_FINAL.RData")
+load("Output_TOsub_ALL.RData")
 yrep <- summary(stanfit, pars = "sim_space")
 y_space_TO <- yrep$summary[,1]
 yrep <- summary(stanfit, pars = "sim_time")
@@ -49,29 +62,34 @@ y_time_TO <- yrep$summary[,1]
 y_space_TO
 y_time_TO
 
-## SLOPE SUMMARIES --------------------------------------
-load("Output_RFsub_FINAL.RData")
+##----------------------------------------------------------------
+
+##---------------------------------------------------------------
+##            Space-Time Slope Differnces : Summaries           -
+##---------------------------------------------------------------
+
+load("Output_RFsub_ALL.RData")
 diff_RF <- as.matrix(stanfit, pars = "b_dif")
 avg_RF <- mean(diff_RF)
 PI_RF <- PI(diff_RF)
 slopes_RF <- c(mean(as.matrix(stanfit, pars = "avg_b_time")), mean(as.matrix(stanfit, pars = "avg_b_space")))
 slopes_PI_RF <- c(PI(as.matrix(stanfit, pars = "avg_b_time")), PI(as.matrix(stanfit, pars = "avg_b_space")))
 
-load("Output_ROsub_FINAL.RData")
+load("Output_ROsub_ALL.RData")
 diff_RO <- as.matrix(stanfit, pars = "b_dif")
 avg_RO <- mean(diff_RO)
 PI_RO <- PI(diff_RO)
 slopes_RO <- c(mean(as.matrix(stanfit, pars = "avg_b_time")), mean(as.matrix(stanfit, pars = "avg_b_space")))
 slopes_PI_RO <- c(PI(as.matrix(stanfit, pars = "avg_b_time")), PI(as.matrix(stanfit, pars = "avg_b_space")))
 
-load("Output_TFsub_FINAL.RData")
+load("Output_TFsub_ALL.RData")
 diff_TF <- as.matrix(stanfit, pars = "b_dif")
 avg_TF <- mean(diff_TF)
 PI_TF <- PI(diff_TF)
 slopes_TF <- c(mean(as.matrix(stanfit, pars = "avg_b_time")), mean(as.matrix(stanfit, pars = "avg_b_space")))
 slopes_PI_TF <- c(PI(as.matrix(stanfit, pars = "avg_b_time")), PI(as.matrix(stanfit, pars = "avg_b_space")))
   
-load("Output_TOsub_FINAL.RData")
+load("Output_TOsub_ALL.RData")
 diff_TO <- as.matrix(stanfit, pars = "b_dif")
 avg_TO <- mean(diff_TO)
 PI_TO <- PI(diff_TO)
@@ -105,11 +123,16 @@ p <- ggplot(combined, aes(x = m, y = parameter, color = model)) + theme_bw() +
 
 p <- p + scale_color_manual(values = c("#253494", "#41b6c4", "#31a354", "#addd8e")) 
 p
-ggsave(filename = "~/space-for-time/REVISED_Avg_SlopeDifferences.png", device = "png", plot = p,
+ggsave(filename = "~/space-for-time/ALL_Avg_SlopeDifferences.png", device = "png", plot = p,
        width = 30, height = 20, units = "cm") 
 
-#### PLOTS --------------------------------------------------
-load("Output_RFsub_FINAL.RData")
+##----------------------------------------------------------------
+
+##---------------------------------------------------------------
+##              Space-Time Slope Differnces : Plots             -
+##---------------------------------------------------------------
+
+load("Output_RFsub_ALL.RData")
 b_dif_rg <- as.matrix(stanfit, pars = "b_dif_rg")
 
 col <- rep("#253494", 6)
@@ -137,7 +160,7 @@ p1 <- p1 + vline_0(size = 0.25, color = "darkgray", linetype = 2) +
 p1
 
 
-load("Output_ROsub_FINAL.RData")
+load("Output_ROsub_ALL.RData")
 
 b_dif_rg <- as.matrix(stanfit, pars = "b_dif_rg")
 
@@ -163,7 +186,7 @@ p2 <- p2 + vline_0(size = 0.25, color = "darkgray", linetype = 2) +
 
 p2
 
-load("Output_TFsub_FINAL.RData")
+load("Output_TFsub_ALL.RData")
 b_dif_rg <- as.matrix(stanfit, pars = "b_dif_rg")
 
 
@@ -187,7 +210,7 @@ p3 <- p3 + vline_0(size = 0.25, color = "darkgray", linetype = 2) +
 
 p3
 
-load("Output_TOsub_FINAL.RData")
+load("Output_TOsub_ALL.RData")
 
 b_dif_rg <- as.matrix(stanfit, pars = "b_dif_rg")
 
@@ -217,5 +240,9 @@ all <- ggarrange(p3, p1, p4, p2,
 
 all
 
-ggsave(filename = "REVISED_SlopeDifferences.png", device = "png", plot = all,
+ggsave(filename = "ALL_SlopeDifferences.png", device = "png", plot = all,
        width = 30, height = 30, units = "cm")
+
+### END OF CODE ---------------------------------------------------------------
+
+

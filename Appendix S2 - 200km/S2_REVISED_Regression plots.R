@@ -12,16 +12,15 @@ library(posterior)
 rm(list = ls())
 gc()
 
-setwd("~/space-for-time")
 
 ### RICHNESS! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-d <- read.csv("~/space-for-time/FinalDataset_RF_200km.csv")
+d <- read.csv("FinalDataset_RF_200km_ALL.csv")
 
 d$Region <- as.integer(as.factor(d$ref))
 d$Obs_ID <- as.integer(as.factor(d$ObsN))
 d$Cover_std <- as.vector(scale(d$Forest.cover))
 
-load("~/space-for-time/Output_RF_200km_FINAL.RData")
+load("Output_RF_200km_ALL.RData")
 draws <- rstan::extract(stanfit, pars = c("a", "b_space", "b_time", "retrans_noise", "observer", "first" ))
 avg_space <- summary(stanfit, pars = "avg_b_space")
 avg_time <- summary(stanfit, pars = "avg_b_time")
@@ -42,7 +41,7 @@ avF <- avg_first$summary[,1]
 d_space <- d %>% filter(space.time == 2)
 d_time <- d %>% filter(space.time == 1)
 
-png("REVISED_Slopes_RF_200km.png",width=40,height=30,units="cm",res=600)
+png("ALL_Slopes_RF_200km_ALL.png",width=40,height=30,units="cm",res=600)
 
 par(mfrow=c(1,2),
     omi=c(0.5, 0.5, 0.5, 0.5),
@@ -64,11 +63,11 @@ for(i in 1:13){
   
   x.scaled <- (x.seq-mean(d_time$Forest.cover))/sd(d_time$Forest.cover)
   mu.time <- sapply(x.scaled,  function(x) mean(exp(draws$a[, i, 1] + draws$b_time[, i] * x + 
-                                                      mean(draws$observer[, , 1]) + mean(draws$first[,1:2]) +
+                                                      mean(draws$observer[, , 1]) + mean(draws$first[,1]) +
                                                       draws$retrans_noise )) )
   
   ci.time <- sapply(x.scaled,  function(x) PI(exp(draws$a[, i, 1] + draws$b_time[, i] * x + 
-                                                    mean(draws$observer[, , 1]) + mean(draws$first[,1:2]) +
+                                                    mean(draws$observer[, , 1]) + mean(draws$first[,1]) +
                                                     draws$retrans_noise )) )
   
   
@@ -97,12 +96,12 @@ for(i in 1:13){
   x.seq <- seq( from=min(d_space$Forest.cover), to = max(d_space$Forest.cover), length.out = 30 )
   
   x.scaled <- (x.seq-mean(d_space$Forest.cover))/sd(d_space$Forest.cover)
-  mu.space <- sapply(x.scaled,  function(x) mean(exp(draws$a[, i, 1] + draws$b_space[, i] * x + 
-                                                       mean(draws$observer[, , 1]) + mean(draws$first[,1:2]) +
+  mu.space <- sapply(x.scaled,  function(x) mean(exp(draws$a[, i, 2] + draws$b_space[, i] * x + 
+                                                       mean(draws$observer[, , 2]) + mean(draws$first[,2]) +
                                                        draws$retrans_noise )) )
   
-  ci.space <- sapply(x.scaled,  function(x) PI(exp(draws$a[, i, 1] + draws$b_space[, i] * x + 
-                                                     mean(draws$observer[, , 1]) + mean(draws$first[,1:2]) +
+  ci.space <- sapply(x.scaled,  function(x) PI(exp(draws$a[, i, 2] + draws$b_space[, i] * x + 
+                                                     mean(draws$observer[, , 2]) + mean(draws$first[,2]) +
                                                      draws$retrans_noise )) )
   
   shade( ci.space, x.scaled, col = alpha("#ED432D", 0.005))
@@ -119,13 +118,13 @@ dev.off()
 rm(list = ls())
 gc()
 
-d <- read.csv("~/space-for-time/FinalDataset_TF_200km.csv")
+d <- read.csv("FinalDataset_TF_200km_ALL.csv")
 
 d$Region <- as.integer(as.factor(d$ref))
 d$Obs_ID <- as.integer(as.factor(d$ObsN))
 d$Cover_std <- as.vector(scale(d$Forest.cover))
 
-load("~/space-for-time/Output_TF_200km_FINAL.RData")
+load("Output_TF_200km_ALL.RData")
 draws <- rstan::extract(stanfit, pars = c("a", "b_space", "b_time", "retrans_noise", "observer", "first" ))
 avg_space <- summary(stanfit, pars = "avg_b_space")
 avg_time <- summary(stanfit, pars = "avg_b_time")
@@ -146,7 +145,7 @@ avF <- avg_first$summary[,1]
 d_space <- d %>% filter(space.time == 2)
 d_time <- d %>% filter(space.time == 1)
 
-png("REVISED_Slopes_TF_200km.png",width=40,height=30,units="cm",res=600)
+png("ALL_Slopes_TF_200km.png",width=40,height=30,units="cm",res=600)
 
 par(mfrow=c(1,2),
     omi=c(0.5, 0.5, 0.5, 0.5),
@@ -163,7 +162,7 @@ axis(2, cex.axis = 1.5)
 
 print("Starting TIME plots...")
 ## TIME
-for(i in 1:30){
+for(i in 1:13){
   print(paste0("Progress: ", round(i/30*100, 0), "% finished."))
   x.seq <- seq( from=min(d_time$Forest.cover), to = max(d_time$Forest.cover), length.out = 30 )
   
@@ -198,7 +197,7 @@ axis(2, cex.axis = 1.5)
 print("Finished TIME plots!")
 print("Starting SPACE plots...")
 ## SPACE
-for(i in 1:30){
+for(i in 1:13){
   print(paste0("Progress: ", round(i/30*100, 0), "% finished."))
   x.seq <- seq( from=min(d_space$Forest.cover), to = max(d_space$Forest.cover), length.out = 30 )
   
