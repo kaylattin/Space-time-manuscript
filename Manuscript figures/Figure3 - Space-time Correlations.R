@@ -23,7 +23,7 @@ library(shinystan)
 ##  Forest Birds  
 ##----------------
 
-load("Output_RFsub_ALL.RData") # Load in dataset
+load("Output_FINAL_REVISED_RF.RData") # Load in dataset
 
 # Extract model parameters for ggplot
 b_space <- summary(stanfit, pars = "b_space") # spatial slopes
@@ -68,7 +68,7 @@ p1
 ##  Open-Habitat Birds  
 ##----------------------
 
-load("Output_ROsub_ALL.RData") # Load in dataset
+load("Output_FINAL_REVISED_RO.RData") # Load in dataset
 
 # Extract model parameters for ggplot
 b_space <- summary(stanfit, pars = "b_space") # spatial slopes
@@ -112,7 +112,7 @@ p2 <- p2 + geom_point(aes(x=avS1, y=avT1), pch = 10, size = 7, stroke = 1, colou
 p2
 
  # Save Species Richness Plot
- ggsave(filename = "~/Space-time-manuscript/ALL_SpaceTimeSlopes_RICHNESS.png", device = "png", plot = p2,
+ ggsave(filename = "~/Space-time-manuscript/ALL_25_SpaceTimeSlopes_RICHNESS.png", device = "png", plot = p2,
         width = 30, height = 30, units = "cm")
  
  
@@ -126,7 +126,7 @@ p2
  ##  Forest Birds  
  ##----------------
  
- load("Output_TFsub_ALL.RData")
+ load("Output_FINAL_REVISED_TF.RData")
  
  # Extract parameters for ggplot
  b_space <- summary(stanfit, pars = "b_space") # spatial slopes
@@ -172,7 +172,7 @@ p2
  ##  Open-Habitat Birds  
  ##----------------------
  
- load("Output_TOsub_ALL.RData")
+ load("Output_FINAL_REVISED_TF.RData")
  
  # Extract parameters for ggplot
  b_space <- summary(stanfit, pars = "b_space") # spatial slopes
@@ -215,7 +215,7 @@ p2
  p2
  
  # Save Total Abundance Plot
- ggsave(filename = "~/Space-time-manuscript/ALL_SpaceTimeSlopes_ABUNDANCE.png", device = "png", plot = p2,
+ ggsave(filename = "~/Space-time-manuscript/ALL_25_SpaceTimeSlopes_ABUNDANCE.png", device = "png", plot = p2,
         width = 30, height = 30, units = "cm")  
  
  

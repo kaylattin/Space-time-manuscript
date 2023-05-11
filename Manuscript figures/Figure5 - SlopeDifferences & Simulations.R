@@ -14,7 +14,7 @@ library(ggpubr)
 # Set up Space-time comparison labels
 region <- vector()
 
-for( i in 1:30 ) {
+for( i in 1:25 ) {
   
   region[i] <- paste("Space-time Comparison", i, sep = " ")
   
@@ -26,70 +26,129 @@ region <- rev(region)
 ##                    Simulated Y as X Changes                   -
 ##----------------------------------------------------------------
 
-xrep = c(0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1)
+xrep = seq(from = 0, to = 1, length.out = nrow(d))
 
-load("Output_RFsub_ALL.RData")
-yrep <- as.matrix(stanfit, pars = "y_rep")
+load("Output_FINAL_REVISED_RF.RData")
 
 yrep <- summary(stanfit, pars = "sim_space")
-y_space_RF <- yrep$summary[,1]
-yrep <- summary(stanfit, pars = "sim_time")
-y_time_RF <- yrep$summary[,1]
-y_space_RF
-y_time_RF
+y <- yrep$summary[,1]
+l <- rep("S_RF" , 898)
+y_space_RF <- data.frame(xrep, y, l)
 
-load("Output_ROsub_ALL.RData")
+yrep <- summary(stanfit, pars = "sim_time")
+y <- yrep$summary[,1]
+l <- rep("T_RF" , 898)
+y_time_RF <- data.frame(xrep, y, l)
+
+load("Output_FINAL_REVISED_RO.RData")
 yrep <- summary(stanfit, pars = "sim_space")
-y_space_RO <- yrep$summary[,1]
-yrep <- summary(stanfit, pars = "sim_time")
-y_time_RO <- yrep$summary[,1]
-y_space_RO
-y_time_RO
+y <- yrep$summary[,1]
+l <- rep("S_RO" , 897)
+y_space_RO <- data.frame(xrep, y, l)
 
-load("Output_TFsub_ALL.RData")
+yrep <- summary(stanfit, pars = "sim_time")
+y <- yrep$summary[,1]
+l <- rep("T_RO" , 897)
+y_time_RO <- data.frame(xrep, y, l)
+
+load("Output_FINAL_REVISED_TF.RData")
 yrep <- summary(stanfit, pars = "sim_space")
-y_space_TF <- yrep$summary[,1]
-yrep <- summary(stanfit, pars = "sim_time")
-y_time_TF <- yrep$summary[,1]
-y_space_TF
-y_time_TF
+y <- yrep$summary[,1]
+l <- rep("S_TF" , 898)
+y_space_TF <- data.frame(xrep, y, l)
 
-load("Output_TOsub_ALL.RData")
+yrep <- summary(stanfit, pars = "sim_time")
+y <- yrep$summary[,1]
+l <- rep("T_TF" , 898)
+y_time_TF <- data.frame(xrep, y, l)
+
+load("Output_FINAL_REVISED_TO.RData")
 yrep <- summary(stanfit, pars = "sim_space")
-y_space_TO <- yrep$summary[,1]
-yrep <- summary(stanfit, pars = "sim_time")
-y_time_TO <- yrep$summary[,1]
-y_space_TO
-y_time_TO
+y <- yrep$summary[,1]
+l <- rep("S_TO" , 897)
+y_space_TO <- data.frame(xrep, y, l)
 
+yrep <- summary(stanfit, pars = "sim_time")
+y <- yrep$summary[,1]
+l <- rep("T_TO" , 897)
+y_time_TO <- data.frame(xrep, y, l)
+
+# Create space simulated dataframes for forest and open birds
+sp_fr <- rbind(y_space_RF, y_space_TF)
+sp_op <- rbind(y_space_RO, y_space_TO)
+
+p <- ggplot(sp_fr, mapping = aes(xrep, y)) +
+  geom_line(data = sp_fr,
+            aes(xrep, y, color = l),
+            size = 2,
+            linetype = "dashed"
+            ) + scale_colour_manual(values=c("#253494", "#31a354")) +
+  theme_classic()
+  
+p
+
+  ## GGplot object
+  p2 <- p +   geom_line(data = sp_op,
+                          aes(xrep, y, color = l),
+                          size = 2,
+                          linetype = "dashed"
+  ) +
+  scale_colour_manual(values=c("#253494", "#41b6c4", "#31a354", "#addd8e")) +
+  theme_classic()
+  
+  p2
+
+  
+ti_fr <- rbind(y_time_RF, y_time_TF)
+ti_op <- rbind(y_time_RO, y_time_TO)
+
+p <- ggplot(ti_fr, mapping = aes(xrep, y)) +
+  geom_line(data = sp_fr,
+            aes(xrep, y, color = l),
+            size = 2
+  ) + scale_colour_manual(values=c("#253494", "#31a354")) +
+  theme_classic()
+
+p
+
+## GGplot object
+p2 <- p +   geom_line(data = ti_op,
+                      aes(xrep, y, color = l),
+                      size = 2
+) +
+  scale_colour_manual(values=c("#253494", "#41b6c4", "#31a354", "#addd8e")) +
+  theme_classic()
+
+p2
+  
 ##----------------------------------------------------------------
 
 ##---------------------------------------------------------------
 ##            Space-Time Slope Differnces : Summaries           -
 ##---------------------------------------------------------------
 
-load("Output_RFsub_ALL.RData")
+load("Output_FINAL_REVISED_RF.RData")
 diff_RF <- as.matrix(stanfit, pars = "b_dif")
 avg_RF <- mean(diff_RF)
 PI_RF <- PI(diff_RF)
 slopes_RF <- c(mean(as.matrix(stanfit, pars = "avg_b_time")), mean(as.matrix(stanfit, pars = "avg_b_space")))
 slopes_PI_RF <- c(PI(as.matrix(stanfit, pars = "avg_b_time")), PI(as.matrix(stanfit, pars = "avg_b_space")))
 
-load("Output_ROsub_ALL.RData")
+load("Output_FINAL_REVISED_RO.RData")
 diff_RO <- as.matrix(stanfit, pars = "b_dif")
 avg_RO <- mean(diff_RO)
 PI_RO <- PI(diff_RO)
 slopes_RO <- c(mean(as.matrix(stanfit, pars = "avg_b_time")), mean(as.matrix(stanfit, pars = "avg_b_space")))
 slopes_PI_RO <- c(PI(as.matrix(stanfit, pars = "avg_b_time")), PI(as.matrix(stanfit, pars = "avg_b_space")))
 
-load("Output_TFsub_ALL.RData")
+load("Output_FINAL_REVISED_TF.RData")
 diff_TF <- as.matrix(stanfit, pars = "b_dif")
 avg_TF <- mean(diff_TF)
 PI_TF <- PI(diff_TF)
 slopes_TF <- c(mean(as.matrix(stanfit, pars = "avg_b_time")), mean(as.matrix(stanfit, pars = "avg_b_space")))
 slopes_PI_TF <- c(PI(as.matrix(stanfit, pars = "avg_b_time")), PI(as.matrix(stanfit, pars = "avg_b_space")))
   
-load("Output_TOsub_ALL.RData")
+load("Output_FINAL_REVISED_TO.RData")
 diff_TO <- as.matrix(stanfit, pars = "b_dif")
 avg_TO <- mean(diff_TO)
 PI_TO <- PI(diff_TO)
@@ -123,7 +182,7 @@ p <- ggplot(combined, aes(x = m, y = parameter, color = model)) + theme_bw() +
 
 p <- p + scale_color_manual(values = c("#253494", "#41b6c4", "#31a354", "#addd8e")) 
 p
-ggsave(filename = "~/space-for-time/ALL_Avg_SlopeDifferences.png", device = "png", plot = p,
+ggsave(filename = "~/Space-time-manuscript/ALL_25_Avg_SlopeDifferences.png", device = "png", plot = p,
        width = 30, height = 20, units = "cm") 
 
 ##----------------------------------------------------------------
@@ -132,7 +191,7 @@ ggsave(filename = "~/space-for-time/ALL_Avg_SlopeDifferences.png", device = "png
 ##              Space-Time Slope Differnces : Plots             -
 ##---------------------------------------------------------------
 
-load("Output_RFsub_ALL.RData")
+load("Output_FINAL_REVISED_RF.RData")
 b_dif_rg <- as.matrix(stanfit, pars = "b_dif_rg")
 
 col <- rep("#253494", 6)
@@ -160,7 +219,7 @@ p1 <- p1 + vline_0(size = 0.25, color = "darkgray", linetype = 2) +
 p1
 
 
-load("Output_ROsub_ALL.RData")
+load("Output_FINAL_REVISED_RO.RData")
 
 b_dif_rg <- as.matrix(stanfit, pars = "b_dif_rg")
 
@@ -186,7 +245,7 @@ p2 <- p2 + vline_0(size = 0.25, color = "darkgray", linetype = 2) +
 
 p2
 
-load("Output_TFsub_ALL.RData")
+load("Output_FINAL_REVISED_TF.RData")
 b_dif_rg <- as.matrix(stanfit, pars = "b_dif_rg")
 
 
@@ -210,7 +269,7 @@ p3 <- p3 + vline_0(size = 0.25, color = "darkgray", linetype = 2) +
 
 p3
 
-load("Output_TOsub_ALL.RData")
+load("Output_FINAL_REVISED_TO.RData")
 
 b_dif_rg <- as.matrix(stanfit, pars = "b_dif_rg")
 
@@ -240,7 +299,7 @@ all <- ggarrange(p3, p1, p4, p2,
 
 all
 
-ggsave(filename = "ALL_SlopeDifferences.png", device = "png", plot = all,
+ggsave(filename = "ALL_25_SlopeDifferences.png", device = "png", plot = all,
        width = 30, height = 30, units = "cm")
 
 ### END OF CODE ---------------------------------------------------------------

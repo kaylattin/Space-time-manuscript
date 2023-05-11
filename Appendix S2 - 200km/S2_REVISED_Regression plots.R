@@ -16,30 +16,27 @@ gc()
 ### RICHNESS! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 d <- read.csv("FinalDataset_RF_200km_ALL.csv")
 
+d_space <- d %>% filter(space.time == 2)
+d_time <- d %>% filter(space.time == 1)
+
 d$Region <- as.integer(as.factor(d$ref))
 d$Obs_ID <- as.integer(as.factor(d$ObsN))
 d$Cover_std <- as.vector(scale(d$Forest.cover))
 
 load("Output_RF_200km_ALL.RData")
 draws <- rstan::extract(stanfit, pars = c("a", "b_space", "b_time", "retrans_noise", "observer", "first" ))
-avg_space <- summary(stanfit, pars = "avg_b_space")
-avg_time <- summary(stanfit, pars = "avg_b_time")
-a_space <- summary(stanfit, pars = "avg_a_space")
-a_time <- summary(stanfit, pars = "avg_a_time")
-obs_space <- summary(stanfit, pars = "avg_obs_space")
-obs_time <- summary(stanfit, pars = "avg_obs_time")
-avg_first <- summary(stanfit, pars = "avg_first_obs")
+a <- summary(stanfit, pars = "a")
 
-avS_B <- avg_space$summary[,1]
-avT_B <- avg_time$summary[,1]
-avS_A <- a_space$summary[,1]
-avT_A <- a_time$summary[,1]
-avS_O <- obs_space$summary[,1]
-avT_O <- obs_time$summary[,1]
-avF <- avg_first$summary[,1]
+# Assign average parameter values
+avS_B <- mean(draws$b_space)
+avT_B <- mean(draws$b_time)
+avS_A <- mean(draws$a[,,2])
+avT_A <- mean(draws$a[,,1])
+avS_O <- mean(draws$observer[,,2])
+avT_O <- mean(draws$observer[,,1])
+avS_F <- mean(draws$first[,2])
+avT_F <- mean(draws$first[,1])
 
-d_space <- d %>% filter(space.time == 2)
-d_time <- d %>% filter(space.time == 1)
 
 png("ALL_Slopes_RF_200km_ALL.png",width=40,height=30,units="cm",res=600)
 
@@ -76,7 +73,7 @@ for(i in 1:13){
   lines( x.scaled, mu.time, col = alpha("#2c7bb6", 0.5), lwd = 1.5 )
 }
 
-av_mu.time <- sapply(x.scaled, function(x) exp(avT_A + avT_B * x + avT_O + avF + mean(draws$retrans_noise)))
+av_mu.time <- sapply(x.scaled, function(x) exp(avT_A + avT_B * x + avT_O + avT_F + mean(draws$retrans_noise)))
 lines(x.scaled, av_mu.time, col = "#2c7bb6", lwd = 5)
 
 
@@ -108,7 +105,7 @@ for(i in 1:13){
   lines( x.scaled, mu.space, col = alpha("#ED432D", 0.5), lwd = 1.5 )
 }
 
-av_mu.space <- sapply(x.scaled, function(x) exp(avS_A + avS_B * x + avS_O + avF + mean(draws$retrans_noise)))
+av_mu.space <- sapply(x.scaled, function(x) exp(avS_A + avS_B * x + avS_O + avS_F + mean(draws$retrans_noise)))
 lines(x.scaled, av_mu.space, col = "#ED432D", lwd = 5)
 print("Finished SPACE plots! :-)")
 dev.off()
@@ -119,33 +116,30 @@ rm(list = ls())
 gc()
 
 d <- read.csv("FinalDataset_TF_200km_ALL.csv")
+d_space <- d %>% filter(space.time == 2)
+d_time <- d %>% filter(space.time == 1)
 
 d$Region <- as.integer(as.factor(d$ref))
 d$Obs_ID <- as.integer(as.factor(d$ObsN))
 d$Cover_std <- as.vector(scale(d$Forest.cover))
 
 load("Output_TF_200km_ALL.RData")
+# Extract draws and parameter summaries
 draws <- rstan::extract(stanfit, pars = c("a", "b_space", "b_time", "retrans_noise", "observer", "first" ))
-avg_space <- summary(stanfit, pars = "avg_b_space")
-avg_time <- summary(stanfit, pars = "avg_b_time")
-a_space <- summary(stanfit, pars = "avg_a_space")
-a_time <- summary(stanfit, pars = "avg_a_time")
-obs_space <- summary(stanfit, pars = "avg_obs_space")
-obs_time <- summary(stanfit, pars = "avg_obs_time")
-avg_first <- summary(stanfit, pars = "avg_first_obs")
+a <- summary(stanfit, pars = "a")
 
-avS_B <- avg_space$summary[,1]
-avT_B <- avg_time$summary[,1]
-avS_A <- a_space$summary[,1]
-avT_A <- a_time$summary[,1]
-avS_O <- obs_space$summary[,1]
-avT_O <- obs_time$summary[,1]
-avF <- avg_first$summary[,1]
+# Assign average parameter values
+avS_B <- mean(draws$b_space)
+avT_B <- mean(draws$b_time)
+avS_A <- mean(draws$a[,,2])
+avT_A <- mean(draws$a[,,1])
+avS_O <- mean(draws$observer[,,2])
+avT_O <- mean(draws$observer[,,1])
+avS_F <- mean(draws$first[,2])
+avT_F <- mean(draws$first[,1])
 
-d_space <- d %>% filter(space.time == 2)
-d_time <- d %>% filter(space.time == 1)
 
-png("ALL_Slopes_TF_200km.png",width=40,height=30,units="cm",res=600)
+png("ALL_Slopes_TF_200km_ALL.png",width=40,height=30,units="cm",res=600)
 
 par(mfrow=c(1,2),
     omi=c(0.5, 0.5, 0.5, 0.5),
@@ -168,11 +162,11 @@ for(i in 1:13){
   
   x.scaled <- (x.seq-mean(d_time$Forest.cover))/sd(d_time$Forest.cover)
   mu.time <- sapply(x.scaled,  function(x) mean(exp(draws$a[, i, 1] + draws$b_time[, i] * x + 
-                                                      mean(draws$observer[, , 1]) + mean(draws$first[,1:2]) +
+                                                      mean(draws$observer[, , 1]) + mean(draws$first[,1]) +
                                                       draws$retrans_noise )) )
   
   ci.time <- sapply(x.scaled,  function(x) PI(exp(draws$a[, i, 1] + draws$b_time[, i] * x + 
-                                                    mean(draws$observer[, , 1]) + mean(draws$first[,1:2]) +
+                                                    mean(draws$observer[, , 1]) + mean(draws$first[,1]) +
                                                     draws$retrans_noise )) )
   
   
@@ -181,7 +175,7 @@ for(i in 1:13){
   lines( x.scaled, mu.time, col = alpha("#2c7bb6", 0.5), lwd = 1.5 )
 }
 
-av_mu.time <- sapply(x.scaled, function(x) exp(avT_A + avT_B * x + avT_O + avF + mean(draws$retrans_noise)))
+av_mu.time <- sapply(x.scaled, function(x) exp(avT_A + avT_B * x + avT_O + avT_F + mean(draws$retrans_noise)))
 lines(x.scaled, av_mu.time, col = "#2c7bb6", lwd = 5)
 
 
@@ -202,19 +196,19 @@ for(i in 1:13){
   x.seq <- seq( from=min(d_space$Forest.cover), to = max(d_space$Forest.cover), length.out = 30 )
   
   x.scaled <- (x.seq-mean(d_space$Forest.cover))/sd(d_space$Forest.cover)
-  mu.space <- sapply(x.scaled,  function(x) mean(exp(draws$a[, i, 1] + draws$b_space[, i] * x + 
-                                                       mean(draws$observer[, , 1]) + mean(draws$first[,1:2]) +
+  mu.space <- sapply(x.scaled,  function(x) mean(exp(draws$a[, i, 2] + draws$b_space[, i] * x + 
+                                                       mean(draws$observer[, , 2]) + mean(draws$first[,2]) +
                                                        draws$retrans_noise )) )
   
-  ci.space <- sapply(x.scaled,  function(x) PI(exp(draws$a[, i, 1] + draws$b_space[, i] * x + 
-                                                     mean(draws$observer[, , 1]) + mean(draws$first[,1:2]) +
+  ci.space <- sapply(x.scaled,  function(x) PI(exp(draws$a[, i, 2] + draws$b_space[, i] * x + 
+                                                     mean(draws$observer[, , 2]) + mean(draws$first[,2]) +
                                                      draws$retrans_noise )) )
   
   shade( ci.space, x.scaled, col = alpha("#ED432D", 0.005))
   lines( x.scaled, mu.space, col = alpha("#ED432D", 0.5), lwd = 1.5 )
 }
 
-av_mu.space <- sapply(x.scaled, function(x) exp(avS_A + avS_B * x + avS_O + avF + mean(draws$retrans_noise)))
+av_mu.space <- sapply(x.scaled, function(x) exp(avS_A + avS_B * x + avS_O + avS_F + mean(draws$retrans_noise)))
 lines(x.scaled, av_mu.space, col = "#ED432D", lwd = 5)
 print("Finished SPACE plots! :-)")
 dev.off()

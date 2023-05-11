@@ -16,7 +16,7 @@ region <- rev(region)
 ### SIMULATED Y AS X CHANGES
 xrep = c(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1)
 
-load("Output_RF_200km_FINAL.RData")
+load("Output_RF_200km_ALL.RData")
 yrep <- as.matrix(stanfit, pars = "y_rep")
 
 yrep <- summary(stanfit, pars = "sim_space")
@@ -24,47 +24,47 @@ y_space_RF <- yrep$summary[,1]
 yrep <- summary(stanfit, pars = "sim_time")
 y_time_RF <- yrep$summary[,1]
 
-load("Output_RO_200km_FINAL.RData")
+load("Output_RO_200km_ALL.RData")
 yrep <- summary(stanfit, pars = "sim_space")
 y_space_RO <- yrep$summary[,1]
 yrep <- summary(stanfit, pars = "sim_time")
 y_time_RO <- yrep$summary[,1]
 
-load("Output_TF_200km_FINAL.RData")
+load("Output_TF_200km_ALL.RData")
 yrep <- summary(stanfit, pars = "sim_space")
 y_space_TF <- yrep$summary[,1]
 yrep <- summary(stanfit, pars = "sim_time")
 y_time_TF <- yrep$summary[,1]
 
-load("Output_TO_200km_FINAL.RData")
+load("Output_TO_200km_ALL.RData")
 yrep <- summary(stanfit, pars = "sim_space")
 y_space_TO <- yrep$summary[,1]
 yrep <- summary(stanfit, pars = "sim_time")
 y_time_TO <- yrep$summary[,1]
 
 ## SLOPE SUMMARIES --------------------------------------
-load("Output_RF_200km_FINAL.RData")
+load("Output_RF_200km_ALL.RData")
 diff_RF <- as.matrix(stanfit, pars = "b_dif")
 avg_RF <- mean(diff_RF)
 PI_RF <- PI(diff_RF)
 slopes_RF <- c(mean(as.matrix(stanfit, pars = "avg_b_time")), mean(as.matrix(stanfit, pars = "avg_b_space")))
 slopes_PI_RF <- c(PI(as.matrix(stanfit, pars = "avg_b_time")), PI(as.matrix(stanfit, pars = "avg_b_space")))
 
-load("Output_RO_200km_FINAL.RData")
+load("Output_RO_200km_ALL.RData")
 diff_RO <- as.matrix(stanfit, pars = "b_dif")
 avg_RO <- mean(diff_RO)
 PI_RO <- PI(diff_RO)
 slopes_RO <- c(mean(as.matrix(stanfit, pars = "avg_b_time")), mean(as.matrix(stanfit, pars = "avg_b_space")))
 slopes_PI_RO <- c(PI(as.matrix(stanfit, pars = "avg_b_time")), PI(as.matrix(stanfit, pars = "avg_b_space")))
 
-load("Output_TF_200km_FINAL.RData")
+load("Output_TF_200km_ALL.RData")
 diff_TF <- as.matrix(stanfit, pars = "b_dif")
 avg_TF <- mean(diff_TF)
 PI_TF <- PI(diff_TF)
 slopes_TF <- c(mean(as.matrix(stanfit, pars = "avg_b_time")), mean(as.matrix(stanfit, pars = "avg_b_space")))
 slopes_PI_TF <- c(PI(as.matrix(stanfit, pars = "avg_b_time")), PI(as.matrix(stanfit, pars = "avg_b_space")))
 
-load("Output_TO_200km_FINAL.RData")
+load("Output_TO_200km_ALL.RData")
 diff_TO <- as.matrix(stanfit, pars = "b_dif")
 avg_TO <- mean(diff_TO)
 PI_TO <- PI(diff_TO)
@@ -104,7 +104,7 @@ ggsave(filename = "~/space-for-time/FINAL_Avg_SlopeDifferences_200km.png", devic
 
 #### PLOTS --------------------------------------------------
 
-load("Output_RF_200km_FINAL.RData")
+load("Output_RF_200km_ALL.RData")
 b_dif_rg <- as.matrix(stanfit, pars = "b_dif_rg")
 
 col <- rep("#DC267F", 6)
@@ -129,7 +129,7 @@ p1 <- p1 + vline_0(size = 0.25, color = "darkgray", linetype = 2) + yaxis_text(c
 p1
 
 
-load("Output_TF_200km_FINAL.RData")
+load("Output_TF_200km_ALL.RData")
 
 b_dif_rg <- as.matrix(stanfit, pars = "b_dif_rg")
 
@@ -153,7 +153,7 @@ p2 <- p2 + vline_0(size = 0.25, color = "darkgray", linetype = 2) +
 
 
 
-load("Output_RO_200km_FINAL.RData")
+load("Output_RO_200km_ALL.RData")
 b_dif_rg <- as.matrix(stanfit, pars = "b_dif_rg")
 
 
@@ -177,7 +177,7 @@ p3 <- p3 + vline_0(size = 0.25, color = "darkgray", linetype = 2) +
 
 
 
-load("Output_TO_200km_FINAL.RData")
+load("Output_TO_200km_ALL.RData")
 
 b_dif_rg <- as.matrix(stanfit, pars = "b_dif_rg")
 

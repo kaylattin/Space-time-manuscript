@@ -6,7 +6,7 @@
 ############################################################################
 ############################################################################
 
-# Load in libaries
+# Load in libraries
 library(tidyverse)
 library(cmdstanr)
 library(shinystan)
@@ -18,7 +18,7 @@ setwd("~/Space-time-manuscript") # Set working directory
 rm(list = ls()) # Clean environment
 gc() # Clean garbage
 
-d <- read.csv("~/Space-time-manuscript/FinalDataset_RFsub_ALL.csv") # Load in dataset
+d <- read.csv("~/Space-time-manuscript/FINAL_REVISED_DATASET_RF.csv") # Load in dataset
 
 ##----------------------------------------------------------------
 ##                        DATA PREPARATION                       -
@@ -56,11 +56,10 @@ d$time[which(d$time == 1)] <- 1
 d$time[which(d$time == 2)] <- 0
 
 d$ObsN <- as.integer(as.factor(d$ObsN)) # Create integer categorical for unique observer
-
 d$Region <- as.integer(as.factor(d$ref)) # Create integer categorical for each space-time comparison
 
 x.seq = seq( from=min(d$Forest.cover), to = max(d$Forest.cover), length.out = 100 ) # Set up fake data for simulations
-xrep = c(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1)
+xrep = seq(from = 0, to = 1, length.out = nrow(d))
 
 ##----------------------------
 ##  Create data input array
@@ -119,7 +118,7 @@ fit <- mod$sample(
 
 # Create a stanfit S4 object 
 stanfit <- rstan::read_stan_csv(fit$output_files())
-  save(stanfit, file =  "Output_RFsub_ALL_Resids.RData")
+  save(stanfit, file =  "Output_FINAL_REVISED_RF.RData")
 
 ##----------------------------
 ##  Posterior checks  

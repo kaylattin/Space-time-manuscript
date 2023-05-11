@@ -21,7 +21,7 @@ data {
   int<lower=1> obs[ncounts];   // observers
   int<lower=1> firstobs[ncounts];
   real pforest[ncounts];  // Percent forest cover
-  vector[11] xrep;
+  vector[ncounts] xrep;
   
 
 }
@@ -95,17 +95,17 @@ richness ~ poisson_log(lambda);
 
 generated quantities{
     int y_rep[ncounts];
-    int sim_space[11];
-    int sim_time[11];
+    int sim_space[ncounts];
+    int sim_time[ncounts];
   //vector[ncounts] log_lik;
   vector[nreg]  b_dif_rg;
   real avg_b_space = mean(b_space);
   real avg_b_time = mean(b_time);
-  real avg_a_space = mean(a[,2]);
-  real avg_a_time = mean(a[,1]);
-  real avg_obs_space = mean(observer[,2]);
-  real avg_obs_time = mean(observer[,1]);
-  real avg_first_obs = mean(first);
+  //real avg_a_space = mean(a[,2]);
+  //real avg_a_time = mean(a[,1]);
+  //real avg_obs_space = mean(observer[,2]);
+  //real avg_obs_time = mean(observer[,1]);
+  //real avg_first_obs = mean(first);
   real b_dif;
 
   real<lower=0> retrans_noise;
@@ -118,11 +118,11 @@ generated quantities{
      
      b_dif = avg_b_time - avg_b_space;
      
-    for(i in 1:11){  
+    for(i in 1:ncounts){  
     real noise = sdnoise*noise_raw[i];
     
-    sim_space[i] = poisson_log_rng(avg_a_space + avg_b_space * xrep[i] + avg_obs_space + avg_first_obs + noise); 
-    sim_time[i] = poisson_log_rng(avg_a_time + avg_b_time * xrep[i] +  avg_obs_time + avg_first_obs + noise);
+    sim_space[i] = poisson_log_rng(mean(a[, 2]) + mean(b_space) * 1 * xrep[i] + noise); 
+    sim_time[i] = poisson_log_rng(mean(a[, 1]) + mean(b_time) * 1 * xrep[i] + noise);
     
     }
       
