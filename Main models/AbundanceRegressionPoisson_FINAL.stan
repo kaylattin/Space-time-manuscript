@@ -12,7 +12,6 @@ data {
   int<lower=1> nfirstobs;
   int<lower=1> ndata;
   
-
   int<lower=1> spacetime[ncounts];
   int<lower=0> ta[ncounts];   // Species ta as a count/integer
   int<lower=0> space[ncounts];  // 0-1 indicator for space
@@ -96,8 +95,8 @@ ta ~ poisson_log(lambda);
 
 generated quantities{
     int y_rep[ncounts];
-    int sim_space[11];
-    int sim_time[11];
+    int sim_space[ncounts];
+    int sim_time[ncounts];
   //vector[ncounts] log_lik;
   vector[nreg]  b_dif_rg;
   real avg_b_space = mean(b_space);

@@ -112,7 +112,7 @@ p2 <- p2 + geom_point(aes(x=avS1, y=avT1), pch = 10, size = 7, stroke = 1, colou
 p2
 
  # Save Species Richness Plot
- ggsave(filename = "~/Space-time-manuscript/ALL_25_SpaceTimeSlopes_RICHNESS.png", device = "png", plot = p2,
+ ggsave(filename = "~/Space-time-manuscript/FINAL_SpaceTimeSlopes_RICHNESS.png", device = "png", plot = p2,
         width = 30, height = 30, units = "cm")
  
  
@@ -172,7 +172,7 @@ p2
  ##  Open-Habitat Birds  
  ##----------------------
  
- load("Output_FINAL_REVISED_TF.RData")
+ load("Output_FINAL_REVISED_TO.RData")
  
  # Extract parameters for ggplot
  b_space <- summary(stanfit, pars = "b_space") # spatial slopes
@@ -215,7 +215,7 @@ p2
  p2
  
  # Save Total Abundance Plot
- ggsave(filename = "~/Space-time-manuscript/ALL_25_SpaceTimeSlopes_ABUNDANCE.png", device = "png", plot = p2,
+ ggsave(filename = "~/Space-time-manuscript/FINAL_SpaceTimeSlopes_ABUNDANCE.png", device = "png", plot = p2,
         width = 30, height = 30, units = "cm")  
  
  

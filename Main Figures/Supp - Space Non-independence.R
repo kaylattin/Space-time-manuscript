@@ -21,7 +21,7 @@ gc() # Clean garbage
 setwd("~/Space-time-manuscript")
 
 # Load in dataset
-d <- read.csv("~/Space-time-manuscript/FINAL_REVISED_DATASET_RF.csv")
+d <- read.csv("~/Space-time-manuscript/FINAL_REVISED_DATASET_TO.csv")
 
 d$Region <- as.integer(as.factor(d$ref)) # Create integer categorical for each space-time comparison
 
@@ -37,7 +37,7 @@ sites <- vector("list") # Initialize list
 for(i in 1:25){
   
   d1 <- as.vector(d_space %>% filter(Region == i))
-  sites[[i]] <- as.character(d1[,9])
+  sites[[i]] <- as.character(d1[,10])
   
 }
 
@@ -67,7 +67,7 @@ pairs$ind.1 <- as.numeric(pairs$ind.1)
 ##-----------------------------------------------
 
 # Extract spatial slopes
-load("Output_RFsub_ALLstops_25.RData")
+load("Output_FINAL_REVISED_TO.RData")
 b_space <- summary(stanfit, pars = "b_space") # spatial slopes
 b <- b_space$summary[,1]
 
@@ -110,27 +110,27 @@ p1 <- ggplot(data = pairs, aes(Freq, slope_diff)) +
   theme_classic()
 p1
 
-ggsave(filename = "~/Space-time-manuscript/S1_Spatial_non-independance.png", device = "png", plot = p1,
+ggsave(filename = "~/Space-time-manuscript/S1_Spatial_non-independance_TO.png", device = "png", plot = p1,
        width = 30, height = 30, units = "cm")  
 
-Cairo(file="Spatial_site_non-independence.png", 
-      type="png",
-      units="cm", 
-      width=40, 
-      height=40, 
-      gamma = getOption("gamma"),
-      bg = "white",
-      dpi=600)
-
-par(mar=c(6,7,4,3) + 0.0001)
-
-plot(pairs$Freq, pairs$slope_diff,
-     ylab = "Number of shared spatial sites between\n pair of space-time comparisons",
-     xlab = "Pair-wise difference in mean spatial slopes",
-     col = alpha("#ED432D", 0.40),
-     pch = 19,
-     cex = 3,
-     cex.axis = 1.5, cex.lab = 2, 
-      )
-
-dev.off()
+# Cairo(file="Spatial_site_non-independence_TO.png", 
+#       type="png",
+#       units="cm", 
+#       width=40, 
+#       height=40, 
+#       gamma = getOption("gamma"),
+#       bg = "white",
+#       dpi=600)
+# 
+# par(mar=c(6,7,4,3) + 0.0001)
+# 
+# plot(pairs$Freq, pairs$slope_diff,
+#      ylab = "Number of shared spatial sites between\n pair of space-time comparisons",
+#      xlab = "Pair-wise difference in mean spatial slopes",
+#      col = alpha("#ED432D", 0.40),
+#      pch = 19,
+#      cex = 3,
+#      cex.axis = 1.5, cex.lab = 2, 
+#       )
+# 
+# dev.off()

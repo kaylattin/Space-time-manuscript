@@ -9,7 +9,7 @@ library(shinystan)
 
 
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ## RICHNESS ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-load("Output_RF_200km_ALL.RData")
+load("Output_FINAL_REVISED_RF_200km.RData")
 
 # Extract parameters for ggplot
 b_space <- summary(stanfit, pars = "b_space") # spatial slopes
@@ -51,7 +51,7 @@ p1
 
 
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ## RICHNESS - OPEN HABITATS BIRDS ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-load("Output_RO_200km_ALL.RData")
+load("Output_FINAL_REVISED_RO_200km.RData")
 
 # Extract parameters for ggplot
 b_space <- summary(stanfit, pars = "b_space") # spatial slopes
@@ -100,7 +100,7 @@ ggsave(filename = "~/Space-time-manuscript/ALL_SpaceTimeSlopes_RICHNESS_200km.pn
 
 
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ## ABUNDANCE - FOREST ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-load("Output_TF_200km_ALL.RData")
+load("Output_FINAL_REVISED_TF_200km.RData")
 
 # Extract parameters for ggplot
 b_space <- summary(stanfit, pars = "b_space") # spatial slopes
@@ -142,7 +142,7 @@ p1
 
 
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ## ABUNDANCE - OPEN-HABITAT ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-load("Output_TO_200km_ALL.RData")
+load("Output_FINAL_REVISED_TO_200km.RData")
 
 # Extract parameters for ggplot
 b_space <- summary(stanfit, pars = "b_space") # spatial slopes

@@ -22,104 +22,104 @@ for( i in 1:25 ) {
 
 region <- rev(region)
 
-##----------------------------------------------------------------
-##                    Simulated Y as X Changes                   -
-##----------------------------------------------------------------
-
-xrep = seq(from = 0, to = 1, length.out = nrow(d))
-
-load("Output_FINAL_REVISED_RF.RData")
-
-yrep <- summary(stanfit, pars = "sim_space")
-y <- yrep$summary[,1]
-l <- rep("S_RF" , 898)
-y_space_RF <- data.frame(xrep, y, l)
-
-yrep <- summary(stanfit, pars = "sim_time")
-y <- yrep$summary[,1]
-l <- rep("T_RF" , 898)
-y_time_RF <- data.frame(xrep, y, l)
-
-load("Output_FINAL_REVISED_RO.RData")
-yrep <- summary(stanfit, pars = "sim_space")
-y <- yrep$summary[,1]
-l <- rep("S_RO" , 897)
-y_space_RO <- data.frame(xrep, y, l)
-
-yrep <- summary(stanfit, pars = "sim_time")
-y <- yrep$summary[,1]
-l <- rep("T_RO" , 897)
-y_time_RO <- data.frame(xrep, y, l)
-
-load("Output_FINAL_REVISED_TF.RData")
-yrep <- summary(stanfit, pars = "sim_space")
-y <- yrep$summary[,1]
-l <- rep("S_TF" , 898)
-y_space_TF <- data.frame(xrep, y, l)
-
-yrep <- summary(stanfit, pars = "sim_time")
-y <- yrep$summary[,1]
-l <- rep("T_TF" , 898)
-y_time_TF <- data.frame(xrep, y, l)
-
-load("Output_FINAL_REVISED_TO.RData")
-yrep <- summary(stanfit, pars = "sim_space")
-y <- yrep$summary[,1]
-l <- rep("S_TO" , 897)
-y_space_TO <- data.frame(xrep, y, l)
-
-yrep <- summary(stanfit, pars = "sim_time")
-y <- yrep$summary[,1]
-l <- rep("T_TO" , 897)
-y_time_TO <- data.frame(xrep, y, l)
-
-# Create space simulated dataframes for forest and open birds
-sp_fr <- rbind(y_space_RF, y_space_TF)
-sp_op <- rbind(y_space_RO, y_space_TO)
-
-p <- ggplot(sp_fr, mapping = aes(xrep, y)) +
-  geom_line(data = sp_fr,
-            aes(xrep, y, color = l),
-            size = 2,
-            linetype = "dashed"
-            ) + scale_colour_manual(values=c("#253494", "#31a354")) +
-  theme_classic()
-  
-p
-
-  ## GGplot object
-  p2 <- p +   geom_line(data = sp_op,
-                          aes(xrep, y, color = l),
-                          size = 2,
-                          linetype = "dashed"
-  ) +
-  scale_colour_manual(values=c("#253494", "#41b6c4", "#31a354", "#addd8e")) +
-  theme_classic()
-  
-  p2
-
-  
-ti_fr <- rbind(y_time_RF, y_time_TF)
-ti_op <- rbind(y_time_RO, y_time_TO)
-
-p <- ggplot(ti_fr, mapping = aes(xrep, y)) +
-  geom_line(data = sp_fr,
-            aes(xrep, y, color = l),
-            size = 2
-  ) + scale_colour_manual(values=c("#253494", "#31a354")) +
-  theme_classic()
-
-p
-
-## GGplot object
-p2 <- p +   geom_line(data = ti_op,
-                      aes(xrep, y, color = l),
-                      size = 2
-) +
-  scale_colour_manual(values=c("#253494", "#41b6c4", "#31a354", "#addd8e")) +
-  theme_classic()
-
-p2
+# ##----------------------------------------------------------------
+# ##                    Simulated Y as X Changes                   -
+# ##----------------------------------------------------------------
+# 
+# xrep = seq(from = 0, to = 1, length.out = nrow(d))
+# 
+# load("Output_FINAL_REVISED_RF.RData")
+# 
+# yrep <- summary(stanfit, pars = "sim_space")
+# y <- yrep$summary[,1]
+# l <- rep("S_RF" , 898)
+# y_space_RF <- data.frame(xrep, y, l)
+# 
+# yrep <- summary(stanfit, pars = "sim_time")
+# y <- yrep$summary[,1]
+# l <- rep("T_RF" , 898)
+# y_time_RF <- data.frame(xrep, y, l)
+# 
+# load("Output_FINAL_REVISED_RO.RData")
+# yrep <- summary(stanfit, pars = "sim_space")
+# y <- yrep$summary[,1]
+# l <- rep("S_RO" , 897)
+# y_space_RO <- data.frame(xrep, y, l)
+# 
+# yrep <- summary(stanfit, pars = "sim_time")
+# y <- yrep$summary[,1]
+# l <- rep("T_RO" , 897)
+# y_time_RO <- data.frame(xrep, y, l)
+# 
+# load("Output_FINAL_REVISED_TF.RData")
+# yrep <- summary(stanfit, pars = "sim_space")
+# y <- yrep$summary[,1]
+# l <- rep("S_TF" , 898)
+# y_space_TF <- data.frame(xrep, y, l)
+# 
+# yrep <- summary(stanfit, pars = "sim_time")
+# y <- yrep$summary[,1]
+# l <- rep("T_TF" , 898)
+# y_time_TF <- data.frame(xrep, y, l)
+# 
+# load("Output_FINAL_REVISED_TO.RData")
+# yrep <- summary(stanfit, pars = "sim_space")
+# y <- yrep$summary[,1]
+# l <- rep("S_TO" , 897)
+# y_space_TO <- data.frame(xrep, y, l)
+# 
+# yrep <- summary(stanfit, pars = "sim_time")
+# y <- yrep$summary[,1]
+# l <- rep("T_TO" , 897)
+# y_time_TO <- data.frame(xrep, y, l)
+# 
+# # Create space simulated dataframes for forest and open birds
+# sp_fr <- rbind(y_space_RF, y_space_TF)
+# sp_op <- rbind(y_space_RO, y_space_TO)
+# 
+# p <- ggplot(sp_fr, mapping = aes(xrep, y)) +
+#   geom_line(data = sp_fr,
+#             aes(xrep, y, color = l),
+#             size = 2,
+#             linetype = "dashed"
+#             ) + scale_colour_manual(values=c("#253494", "#31a354")) +
+#   theme_classic()
+#   
+# p
+# 
+#   ## GGplot object
+#   p2 <- p +   geom_line(data = sp_op,
+#                           aes(xrep, y, color = l),
+#                           size = 2,
+#                           linetype = "dashed"
+#   ) +
+#   scale_colour_manual(values=c("#253494", "#41b6c4", "#31a354", "#addd8e")) +
+#   theme_classic()
+#   
+#   p2
+# 
+#   
+# ti_fr <- rbind(y_time_RF, y_time_TF)
+# ti_op <- rbind(y_time_RO, y_time_TO)
+# 
+# p <- ggplot(ti_fr, mapping = aes(xrep, y)) +
+#   geom_line(data = sp_fr,
+#             aes(xrep, y, color = l),
+#             size = 2
+#   ) + scale_colour_manual(values=c("#253494", "#31a354")) +
+#   theme_classic()
+# 
+# p
+# 
+# ## GGplot object
+# p2 <- p +   geom_line(data = ti_op,
+#                       aes(xrep, y, color = l),
+#                       size = 2
+# ) +
+#   scale_colour_manual(values=c("#253494", "#41b6c4", "#31a354", "#addd8e")) +
+#   theme_classic()
+# 
+# p2
   
 ##----------------------------------------------------------------
 
@@ -182,7 +182,7 @@ p <- ggplot(combined, aes(x = m, y = parameter, color = model)) + theme_bw() +
 
 p <- p + scale_color_manual(values = c("#253494", "#41b6c4", "#31a354", "#addd8e")) 
 p
-ggsave(filename = "~/Space-time-manuscript/ALL_25_Avg_SlopeDifferences.png", device = "png", plot = p,
+ggsave(filename = "~/Space-time-manuscript/FINAL_Avg_SlopeDifferences.png", device = "png", plot = p,
        width = 30, height = 20, units = "cm") 
 
 ##----------------------------------------------------------------
@@ -299,7 +299,7 @@ all <- ggarrange(p3, p1, p4, p2,
 
 all
 
-ggsave(filename = "ALL_25_SlopeDifferences.png", device = "png", plot = all,
+ggsave(filename = "FINAL_SlopeDifferences.png", device = "png", plot = all,
        width = 30, height = 30, units = "cm")
 
 ### END OF CODE ---------------------------------------------------------------

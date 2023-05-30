@@ -6,7 +6,7 @@
 ##################################################################################
 ##################################################################################
 
-## Load in libaries
+## Load in libraries
 library(tidyverse)
 library(cmdstanr)
 library(rstan)
@@ -23,17 +23,16 @@ setwd("~/Space-time-manuscript")
 ##                       SPECIES RICHNESS                       ##
 ##################################################################
 
-d <- read.csv("~/Space-time-manuscript/FinalDataset_ROsub_ALL.csv") # Load in dataset
+d <- read.csv("~/Space-time-manuscript/FINAL_REVISED_DATASET_RO.csv") # Load in dataset
 d_space <- d %>% filter(space.time == 2) # Space
 d_time <- d %>% filter(space.time == 1) # Time
 
-d <- d %>% filter(!ref %in% c(2214, 2218, 63002, 63010, 63108))
 d$Region <- as.integer(as.factor(d$ref)) # Create integer categorical for each space-time comparison
 
 d$Obs_ID <- as.integer(as.factor(d$ObsN))
 d$Cover_std <- as.vector(scale(d$Forest.cover))
 
-load("~/Space-time-manuscript/Output_ROsub_ALLstops_25.RData") #  Load in RStan object
+load("~/Space-time-manuscript/Output_FINAL_REVISED_RO.RData") #  Load in RStan object
 
 # Extract draws and parameter summaries
 draws <- rstan::extract(stanfit, pars = c("a", "b_space", "b_time", "retrans_noise", "observer", "first" ))
@@ -53,7 +52,7 @@ avT_F <- mean(draws$first[,1])
 ##  Plotting Figure in R  
 ##------------------------
 
-Cairo(file="ALL_Slopes_ROsub_25.png", 
+Cairo(file="ALL_Slopes_FINAL_RO.png", 
       type="png",
       units="cm", 
       width=40, 
@@ -71,7 +70,7 @@ plot(d_time$Forest.cover, d_time$Richness_ALL,
      col = alpha("#2c7bb6", 0), 
      pch = 3,
      yaxt = "n", cex.axis = 1.5, cex.lab = 2, 
-     ylim = c(0,35),
+     ylim = c(0,20),
      cex.main = 2, main = "", xlab = "Percent forest cover", ylab = "Species richness")
 
 axis(2, cex.axis = 1.5)
@@ -108,7 +107,7 @@ print("Starting SPACE plots...")
 plot(d_space$Forest.cover, d_space$Richness_ALL,
      col = alpha("#ED432D", 0), 
      pch = 3,
-     ylim = c(0,35),
+     ylim = c(0,20),
      yaxt = "n", cex.axis = 1.5, cex.lab = 2, 
      cex.main = 2, main = "", xlab = "Percent forest cover", ylab = "Species richness")
 
@@ -140,7 +139,7 @@ dev.off()
 ## Plot mean relationship summarized across all space-time comparisons, separately in foreground
 ## For further overlaying and image processing in ClipStudio...
 
-png(file="ALL_Slopes_RO_fg_25.png", 
+png(file="ALL_Slopes_fg_RO.png", 
     type="cairo",
     units="cm", 
     width=40, 
@@ -156,30 +155,26 @@ par(mfrow=c(1,2),
 plot(d_time$Forest.cover, d_time$Richness_ALL, 
      col = alpha("#2c7bb6", 0), 
      pch = 3,
-     ylim = c(0,35),
+     ylim = c(0,20),
      yaxt = "n", cex.axis = 1.5, cex.lab = 2, 
      cex.main = 2, main = "", xlab = "Percent forest cover", ylab = "Species richness")
 
 axis(2, cex.axis = 1.5)
 
-x.seq <- seq( from=min(d_time$Forest.cover), to = max(d_time$Forest.cover), length.out = 200 )
-x.scaled <- (x.seq-mean(d_time$Forest.cover))/sd(d_time$Forest.cover)
-av_mu.time <- sapply(x.scaled, function(x) exp(avT_A + avT_B * x + avT_O + avT_F + mean(draws$retrans_noise))) 
+av_mu.time <- sapply(x.scaled, function(x) exp(avT_A + avT_B * x + avT_O + avT_F + mean(draws$retrans_noise))) # Average bird-forest cover relationship averaged across all 30 comparisons ... 
 lines(x.scaled, av_mu.time, col = "#41b6c4", lwd = 5)
 
 ## Spatial mean slope
 plot(d_space$Forest.cover, d_space$Richness_ALL, 
      col = alpha("#2c7bb6", 0), 
      pch = 3,
-     ylim = c(0,35),
+     ylim = c(0,20),
      yaxt = "n", cex.axis = 1.5, cex.lab = 2, 
      cex.main = 2, main = "", xlab = "Percent forest cover", ylab = "Species richness")
 
 axis(2, cex.axis = 1.5)
 
-x.seq <- seq( from=min(d_space$Forest.cover), to = max(d_space$Forest.cover), length.out = 200 )
-x.scaled <- (x.seq-mean(d_space$Forest.cover))/sd(d_space$Forest.cover)
-av_mu.space <- sapply(x.scaled, function(x) exp(avS_A + avS_B * x + avS_O + avS_F + mean(draws$retrans_noise))) 
+av_mu.space <- sapply(x.scaled, function(x) exp(avS_A + avS_B * x + avS_O + avS_F + mean(draws$retrans_noise))) # Average bird-forest cover relationship averaged across all 30 comparisons ... 
 lines(x.scaled, av_mu.space, col = "#41b6c4", lwd = 5, lty = 2)
 
 dev.off()
@@ -193,19 +188,16 @@ dev.off()
 rm(list = ls())
 gc()
 
-d <- read.csv("~/Space-time-manuscript/FinalDataset_TOsub_ALL.csv")
-d_space <- d %>% filter(space.time == 2)
-d_time <- d %>% filter(space.time == 1)
+d <- read.csv("~/Space-time-manuscript/FINAL_REVISED_DATASET_TO.csv")
+d_space <- d %>% filter(space.time == 2) # Space
+d_time <- d %>% filter(space.time == 1) # Time
 
 d <- d %>% filter(!ref %in% c(2214, 2218, 63002, 63010, 63108))
 d$Region <- as.integer(as.factor(d$ref)) # Create integer categorical for each space-time comparison
-
 d$Obs_ID <- as.integer(as.factor(d$ObsN))
 d$Cover_std <- as.vector(scale(d$Forest.cover))
 
-load("~/Space-time-manuscript/Output_TOsub_ALLstops_25.RData")
-
-# Extract draws and parameter summaries
+load("~/Space-time-manuscript/Output_FINAL_REVISED_TO.RData")
 draws <- rstan::extract(stanfit, pars = c("a", "b_space", "b_time", "retrans_noise", "observer", "first" ))
 a <- summary(stanfit, pars = "a")
 
@@ -219,7 +211,7 @@ avT_O <- mean(draws$observer[,,1])
 avS_F <- mean(draws$first[,2])
 avT_F <- mean(draws$first[,1])
 
-Cairo(file="ALL_Slopes_TOsub_25.png", 
+Cairo(file="ALL_Slopes_FINAL_TO.png", 
       type="png",
       units="cm", 
       width=40, 
@@ -233,7 +225,7 @@ par(mfrow=c(1,2),
 
 plot(d_time$Forest.cover, d_time$TA_ALL,
      col = alpha("#2c7bb6", 0), 
-     ylim = c(0,80),
+     ylim = c(0,50),
      pch = 3,
      yaxt = "n", cex.axis = 1.5, cex.lab = 2, 
      cex.main = 2, main = "", xlab = "Percent forest cover", ylab = "Total abundance")
@@ -266,7 +258,7 @@ print("Starting SPACE plots...")
 
 plot(d_space$Forest.cover, d_space$TA_ALL,
      col = alpha("#ED432D", 0), 
-     ylim = c(0,80),
+     ylim = c(0,50),
      pch = 3,
      yaxt = "n", cex.axis = 1.5, cex.lab = 2, 
      cex.main = 2, main = "", xlab = "Percent forest cover", ylab = "Total abundance")
@@ -294,7 +286,7 @@ for(i in 1:25){
 print("Finished SPACE plots! :-)")
 dev.off()
 
-png(file="ALL_Slopes_TO_fg_25.png", 
+png(file="ALL_Slopes_fg_TO.png", 
     type="cairo",
     units="cm", 
     width=40, 
@@ -308,7 +300,7 @@ par(mfrow=c(1,2),
 
 plot(d_time$Forest.cover, d_time$TA_ALL,
      col = alpha("#2c7bb6", 0),
-     ylim = c(0,80),
+     ylim = c(0,50),
      pch = 3,
      yaxt = "n", cex.axis = 1.5, cex.lab = 2, 
      cex.main = 2, main = "", xlab = "Percent forest cover", ylab = "Total abundance")
@@ -320,7 +312,7 @@ lines(x.scaled, av_mu.time, col = "#addd8e", lwd = 5)
 
 plot(d_space$Forest.cover, d_space$TA_ALL,
      col = alpha("#2c7bb6", 0), 
-     ylim = c(0,80),
+     ylim = c(0,50),
      pch = 3,
      yaxt = "n", cex.axis = 1.5, cex.lab = 2, 
      cex.main = 2, main = "", xlab = "Percent forest cover", ylab = "Total abundance")

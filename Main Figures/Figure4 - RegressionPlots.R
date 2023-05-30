@@ -27,7 +27,6 @@ d <- read.csv("~/Space-time-manuscript/FINAL_REVISED_DATASET_RF.csv") # Load in 
 d_space <- d %>% filter(space.time == 2) # Space
 d_time <- d %>% filter(space.time == 1) # Time
 
-d <- d %>% filter(!ref %in% c(2214, 2218, 63002, 63010, 63108))
 d$Region <- as.integer(as.factor(d$ref)) # Create integer categorical for each space-time comparison
 
 d$Obs_ID <- as.integer(as.factor(d$ObsN))
@@ -71,7 +70,7 @@ plot(d_time$Forest.cover, d_time$Richness_ALL,
      col = alpha("#2c7bb6", 0), 
      pch = 3,
      yaxt = "n", cex.axis = 1.5, cex.lab = 2, 
-     ylim = c(0,100),
+     ylim = c(0,40),
      cex.main = 2, main = "", xlab = "Percent forest cover", ylab = "Species richness")
 
 axis(2, cex.axis = 1.5)
@@ -108,7 +107,7 @@ print("Starting SPACE plots...")
 plot(d_space$Forest.cover, d_space$Richness_ALL,
      col = alpha("#ED432D", 0), 
      pch = 3,
-     ylim = c(0,100),
+     ylim = c(0,40),
      yaxt = "n", cex.axis = 1.5, cex.lab = 2, 
      cex.main = 2, main = "", xlab = "Percent forest cover", ylab = "Species richness")
 
@@ -156,7 +155,7 @@ par(mfrow=c(1,2),
 plot(d_time$Forest.cover, d_time$Richness_ALL, 
      col = alpha("#2c7bb6", 0), 
      pch = 3,
-     ylim = c(0,100),
+     ylim = c(0,40),
      yaxt = "n", cex.axis = 1.5, cex.lab = 2, 
      cex.main = 2, main = "", xlab = "Percent forest cover", ylab = "Species richness")
 
@@ -169,7 +168,7 @@ lines(x.scaled, av_mu.time, col = "#253494", lwd = 5)
 plot(d_space$Forest.cover, d_space$Richness_ALL, 
      col = alpha("#2c7bb6", 0), 
      pch = 3,
-     ylim = c(0,100),
+     ylim = c(0,40),
      yaxt = "n", cex.axis = 1.5, cex.lab = 2, 
      cex.main = 2, main = "", xlab = "Percent forest cover", ylab = "Species richness")
 
@@ -193,7 +192,6 @@ d <- read.csv("~/Space-time-manuscript/FINAL_REVISED_DATASET_TF.csv")
 d_space <- d %>% filter(space.time == 2) # Space
 d_time <- d %>% filter(space.time == 1) # Time
 
-d <- d %>% filter(!ref %in% c(2214, 2218, 63002, 63010, 63108))
 d$Region <- as.integer(as.factor(d$ref)) # Create integer categorical for each space-time comparison
 d$Obs_ID <- as.integer(as.factor(d$ObsN))
 d$Cover_std <- as.vector(scale(d$Forest.cover))

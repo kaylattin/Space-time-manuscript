@@ -18,7 +18,7 @@ setwd("~/Space-time-manuscript") # Set working directory
 rm(list = ls()) # Clean environment
 gc() # Clean garbage
 
-d <- read.csv("~/Space-time-manuscript/FINAL_REVISED_DATASET_RF.csv") # Load in dataset
+d <- read.csv("~/Space-time-manuscript/FINAL_REVISED_DATASET_TO_200km.csv") # Load in dataset
 
 ##----------------------------------------------------------------
 ##                        DATA PREPARATION                       -
@@ -72,8 +72,8 @@ d_slim <- list(
   nst = 2,
   ndata = 100,
   
-  #ta = d$TA_ALL, # turn on if running abundance model
-  richness = d$Richness_ALL, # turn on if running richness model
+  ta = d$TA_ALL, # turn on if running abundance model
+  #richness = d$Richness_ALL, # turn on if running richness model
   spacetime = d$space.time,
   space = d$space,
   time = d$time,
@@ -96,8 +96,8 @@ d_slim <- list(
 ##  Compile model in cmdstan  
 ##----------------------------
 
-#file <- file.path("~/Space-time-manuscript/Main models/AbundanceRegressionPoisson_FINAL.stan") # turn on if running abundance model
-file <- file.path("~/Space-time-manuscript/Main models/RichnessRegressionPoisson_FINAL.stan") # turn on if running richness model
+file <- file.path("~/Space-time-manuscript/Main models/AbundanceRegressionPoisson_FINAL.stan") # turn on if running abundance model
+#file <- file.path("~/Space-time-manuscript/Main models/RichnessRegressionPoisson_FINAL.stan") # turn on if running richness model
 mod <- cmdstan_model(file, pedantic = TRUE)
 check_cmdstan_toolchain(fix = TRUE)
 
@@ -118,7 +118,7 @@ fit <- mod$sample(
 
 # Create a stanfit S4 object 
 stanfit <- rstan::read_stan_csv(fit$output_files())
-  save(stanfit, file =  "Output_FINAL_REVISED_RF.RData")
+  save(stanfit, file =  "Output_FINAL_REVISED_TO_200km.RData")
 
 ##----------------------------
 ##  Posterior checks  

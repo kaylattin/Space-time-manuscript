@@ -210,33 +210,33 @@ write.xlsx(finalWide,"finalWide_check.xlsx")
 
 
 ### ~~~~~~~~~~~~~~~~~~~~~~~~~ ### ANNUAL COVER FOR 100 M STOP BUFFERS ### ~~~~~~~~~~~~~~~~~~~~~~~~~
-
+## REMOVED IN REVISIONS
 # Before running the code below, run the code above using the R object dStops in order to get forest cover estimates for each 100m buffer
 # Then, continue:
-for(n in 1:nrow(final)){
-if(final$percent[n] >= 0.60){ # If forest cover in the stop is >= 60%, tag it as forested
-  final$Forested[n] = 1
-}else if(final$percent[n] <= 0.40){ # else if forest cover <= 40%, tag is as open
-  final$Forested[n] = 2
-}else{
-  final$Forested[n] = 0
-}
-  
-  if(! n %% 10000){
-    print(paste0("Progress: ", round(n/nrow(final)*100, 2), "% finished."))
-    flush.console()
-  }
-}
-
-stopsInForest <- final %>% filter(Forested == 1)
-stopsInOpen <- final %>% filter(Forested == 2)
-
-stopsInForest$Stop <- gsub("^.*\\.", "", stopsInForest$rte)
-stopsInForest$rte <- sub("^(.*)[.].*", "\\1", stopsInForest$rte)
-
-stopsInOpen$Stop <- gsub("^.*\\.", "", stopsInOpen$rte)
-stopsInOpen$rte <- sub("^(.*)[.].*", "\\1", stopsInOpen$rte)
-
-setwd("~/space-for-time/Derived data products")
-write.csv(stopsInForest, "stopsInForest.csv")
-write.csv(stopsInOpen, "stopsInOpen.csv")
+# for(n in 1:nrow(final)){
+# if(final$percent[n] >= 0.60){ # If forest cover in the stop is >= 60%, tag it as forested
+#   final$Forested[n] = 1
+# }else if(final$percent[n] <= 0.40){ # else if forest cover <= 40%, tag is as open
+#   final$Forested[n] = 2
+# }else{
+#   final$Forested[n] = 0
+# }
+#   
+#   if(! n %% 10000){
+#     print(paste0("Progress: ", round(n/nrow(final)*100, 2), "% finished."))
+#     flush.console()
+#   }
+# }
+# 
+# stopsInForest <- final %>% filter(Forested == 1)
+# stopsInOpen <- final %>% filter(Forested == 2)
+# 
+# stopsInForest$Stop <- gsub("^.*\\.", "", stopsInForest$rte)
+# stopsInForest$rte <- sub("^(.*)[.].*", "\\1", stopsInForest$rte)
+# 
+# stopsInOpen$Stop <- gsub("^.*\\.", "", stopsInOpen$rte)
+# stopsInOpen$rte <- sub("^(.*)[.].*", "\\1", stopsInOpen$rte)
+# 
+# setwd("~/space-for-time/Derived data products")
+# write.csv(stopsInForest, "stopsInForest.csv")
+# write.csv(stopsInOpen, "stopsInOpen.csv")
