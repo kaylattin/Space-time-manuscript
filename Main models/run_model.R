@@ -14,11 +14,13 @@ library(rstan)
 library(bayesplot)
 library(rethinking)
 
-setwd("~/Space-time-manuscript") # Set working directory
+
 rm(list = ls()) # Clean environment
 gc() # Clean garbage
 
-d <- read.csv("~/Space-time-manuscript/FINAL_REVISED_DATASET_TO_200km.csv") # Load in dataset
+d <- read.csv("FINAL_REVISED_DATASET_RF.csv") # Load in dataset
+
+n_distinct(d$ObsN)
 
 ##----------------------------------------------------------------
 ##                        DATA PREPARATION                       -
@@ -29,18 +31,18 @@ d <- read.csv("~/Space-time-manuscript/FINAL_REVISED_DATASET_TO_200km.csv") # Lo
 ##-------------------------
 
 # Species richness
-hist(d$Richness)
-min(d$Richness)
-max(d$Richness)
-mean(d$Richness)
-median(d$Richness)
+hist(d$Richness_ALL)
+min(d$Richness_ALL)
+max(d$Richness_ALL)
+mean(d$Richness_ALL)
+median(d$Richness_ALL)
 
 # Total abundance
-hist(d$TA)
-min(d$TA)
-max(d$TA)
-mean(d$TA)
-median(d$TA)
+hist(d$TA_ALL)
+min(d$TA_ALL)
+max(d$TA_ALL)
+mean(d$TA_ALL)
+median(d$TA_ALL)
 
 ##----------------------------
 ##  Preparing data for input  
