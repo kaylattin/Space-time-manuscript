@@ -10,6 +10,7 @@ library(bayesplot)
 library(RColorBrewer)
 library(ggplot2)
 library(ggpubr)
+library(rethinking)
 
 # Set up Space-time comparison labels
 region <- vector()
@@ -169,21 +170,30 @@ theme_set(bayesplot::theme_default())
 pos <- position_nudge(y = ifelse(combined$model == "Open-Habitat Species Richness", 0, 
                                  ifelse(combined$model == "Forest Bird Total Abundance", -0.1,
                                         ifelse(combined$model == "Open-Habitat Bird Abundance", -0.2, 0.1))))
-p <- ggplot(combined, aes(x = m, y = parameter, color = model)) + theme_bw() +
-  geom_point(position = pos, size = 6) +
-  vline_0(size = 0.25, color = "darkgray", linetype = 2) +
-  geom_linerange(aes(xmin = ll, xmax = hh), position = pos, size = 2) + 
+p <- ggplot(combined, aes(x = m, y = parameter, color = model, shape = model, fill = model)) +
+    geom_linerange(aes(xmin = ll, xmax = hh), position = pos, size = 1) + 
+  geom_point(position = pos, size = 3, stroke = 1) +
+  vline_0(linewidth = 0.25, color = "darkgray", linetype = 2) +
   yaxis_text(FALSE) +
-  theme(plot.margin = unit(c(1,1,1,1),"cm"),
-        plot.title = element_text(size = 24, face = "bold"),
-        legend.text = element_text(size=18, family = "Arial"),
-        axis.title = element_text(size = 20), axis.title.x = element_text(vjust= -2, family ="Arial" ), axis.title.y = element_text(vjust = 5, family = "Arial"), 
-        axis.text = element_text(size = 18, family = "Arial")) + labs(title = "", x = "Slope difference", y = "Model")
+  labs(title = "", x = "Slope difference", y = "Model") + 
+  theme(plot.margin = unit(c(0.2,0.2,0.2,0.2),"cm"),
+        plot.title = element_text(size = 12, face = "bold"),
+        legend.text = element_text(size=9, family = "Arial"),
+        axis.title = element_text(size = 10), axis.title.x = element_text(vjust= -2, family = "Arial"), axis.title.y = element_text(vjust = 5, family = "Arial"), 
+        axis.text = element_text(size = 9, family = "Arial"),
+        panel.background = element_rect(fill = "white")) + 
+  scale_y_discrete(labels = "") +
+  scale_fill_manual(values=c("#253494", "white", "#31a354","white"),
+                    guide = "none") +
+  scale_shape_manual(values=c(16, 21, 16, 21),
+                     guide = "none") +
+  scale_color_manual(name = "", values = c("#253494", "#41b6c4", "#31a354", "#addd8e"),
+                     guide = guide_legend(nrow = 4, override.aes = list(shape = c(16,21,16,21),
+                                                              fill = c(NA, "white", NA, "white"),
+                                                              stroke = c(NA, 2, NA, 2)))) + theme_bw()
 
-p <- p + scale_color_manual(values = c("#253494", "#41b6c4", "#31a354", "#addd8e")) 
+p <- p + labs(tag = "B") + theme(plot.tag = element_text(face = "bold", size = 18), legend.position = "bottom")
 p
-ggsave(filename = "~/Space-time-manuscript/FINAL_Avg_SlopeDifferences.png", device = "png", plot = p,
-       width = 30, height = 20, units = "cm") 
 
 ##----------------------------------------------------------------
 
@@ -202,9 +212,9 @@ col <- rep("#253494", 6)
 color_scheme_set(col)
   bayesplot_theme_set(theme_bw())
   
-comparisons <- seq(1:30)
-
-p1 <- mcmc_intervals(b_dif_rg)
+comparisons <- seq(1:25)
+fit1 <- summary(stanfit, pars = "b_dif_rg")
+p1 <- mcmc_intervals(b_dif_rg, point_size = 0, inner_size = 1)
 
 p1 <- p1 + vline_0(size = 0.25, color = "darkgray", linetype = 2) +
   labs(
@@ -212,17 +222,18 @@ p1 <- p1 + vline_0(size = 0.25, color = "darkgray", linetype = 2) +
     y = "Comparison",
     size = 4
   ) +
-  theme(plot.margin = unit(c(1,1,1,1),"cm"),
-        plot.title = element_text(size = 20, face = "bold"),
-        axis.title = element_text(size = 14), axis.title.x = element_text(vjust= -2 ), axis.title.y = element_text(vjust = 5), 
-        axis.text = element_text(size = 12)) + labs(title = "")
+  scale_y_discrete(labels = rep(1:25)) +
+  theme(plot.margin = unit(c(0.2,0.2,0.4,0.4),"cm"),
+        plot.title = element_text(size = 10, face = "bold"),
+        axis.title = element_text(size = 9), axis.title.x = element_text(vjust= -2 ), axis.title.y = element_text(vjust = 5), 
+        axis.text = element_text(size = 6)) + labs(title = "") +
+  geom_point(aes(x = fit1$summary[,1], y = (rep(1:25))),
+                 fill = "#253494", stroke = 1, pch = 21, size = 1.5, colour = "#253494")
 p1
-
 
 load("Output_FINAL_REVISED_RO.RData")
 
 b_dif_rg <- as.matrix(stanfit, pars = "b_dif_rg")
-
 
 col <- rep("#67C5D0", 6)
 # #67C5D0 - richness
@@ -230,18 +241,22 @@ col <- rep("#67C5D0", 6)
 
 color_scheme_set(col)
 bayesplot_theme_set(theme_bw())
-p2 <- mcmc_intervals(b_dif_rg)
 
+fit2 <- summary(stanfit, pars = "b_dif_rg")
+p2 <- mcmc_intervals(b_dif_rg, point_size = 0, inner_size = 1)
 p2 <- p2 + vline_0(size = 0.25, color = "darkgray", linetype = 2) +
   labs(
     x = "Slope difference", 
     y = "Comparison",
     size = 4
   ) +
-  theme(plot.margin = unit(c(1,1,1,1),"cm"),
-        plot.title = element_text(size = 20, face = "bold"),
-        axis.title = element_text(size = 14), axis.title.x = element_text(vjust= -2 ), axis.title.y = element_text(vjust = 5), 
-        axis.text = element_text(size = 12)) + labs(title = "")
+  scale_y_discrete(labels = rep(1:25)) +
+  theme(plot.margin = unit(c(0.2,0.2,0.4,0.4),"cm"),
+        plot.title = element_text(size = 10, face = "bold"),
+        axis.title = element_text(size = 9), axis.title.x = element_text(vjust= -2 ), axis.title.y = element_text(vjust = 5), 
+        axis.text = element_text(size = 6)) + labs(title = "") +
+  geom_point(aes(x = fit2$summary[,1], y = (rep(1:25))),
+             fill = "white", stroke = 1, pch = 21, size = 1.5, colour = "#67C5D0")
 
 p2
 
@@ -254,18 +269,22 @@ col <- rep("#31a354", 6)
 ### main model - by region
 color_scheme_set(col)
 bayesplot_theme_set(theme_bw())
-p3 <- mcmc_intervals(b_dif_rg)
+fit3 <- summary(stanfit, pars = "b_dif_rg")
 
+p3 <- mcmc_intervals(b_dif_rg, point_size = 0, inner_size = 1)
 p3 <- p3 + vline_0(size = 0.25, color = "darkgray", linetype = 2) +
   labs(
     x = "Slope difference", 
     y = "Comparison",
     size = 4
   ) +
-  theme(plot.margin = unit(c(1,1,1,1),"cm"),
-        plot.title = element_text(size = 20, face = "bold"),
-        axis.title = element_text(size = 14), axis.title.x = element_text(vjust= -2 ), axis.title.y = element_text(vjust = 5), 
-        axis.text = element_text(size = 12)) + labs(title = "")
+  scale_y_discrete(labels = rep(1:25)) +
+  theme(plot.margin = unit(c(0.2,0.2,0.4,0.4),"cm"),
+        plot.title = element_text(size = 10, face = "bold"),
+        axis.title = element_text(size = 9), axis.title.x = element_text(vjust= -2 ), axis.title.y = element_text(vjust = 5), 
+        axis.text = element_text(size = 6)) + labs(title = "") +
+  geom_point(aes(x = fit3$summary[,1], y = (rep(1:25))),
+             fill = "#31a354", stroke = 1, pch = 21, size = 1.5, colour = "#31a354")
 
 p3
 
@@ -278,7 +297,8 @@ col <- rep("#addd8e", 6)
 ### main model - by region
 color_scheme_set(col)
 bayesplot_theme_set(theme_bw())
-p4 <- mcmc_intervals(b_dif_rg)
+fit4 <- summary(stanfit, pars = "b_dif_rg")
+p4 <- mcmc_intervals(b_dif_rg, point_size = 0, inner_size = 1)
 
 p4 <- p4 + vline_0(size = 0.25, color = "darkgray", linetype = 2) +
   labs(
@@ -286,21 +306,26 @@ p4 <- p4 + vline_0(size = 0.25, color = "darkgray", linetype = 2) +
     y = "Comparison",
     size = 4
   ) +
-  theme(plot.margin = unit(c(1,1,1,1),"cm"),
-        plot.title = element_text(size = 20, face = "bold"),
-        axis.title = element_text(size = 14), axis.title.x = element_text(vjust= -2 ), axis.title.y = element_text(vjust = 5), 
-        axis.text = element_text(size = 12)) + labs(title = "")
+  scale_y_discrete(labels = rep(1:25)) +
+  theme(plot.margin = unit(c(0.2,0.2,0.4,0.4),"cm"),
+        plot.title = element_text(size = 10, face = "bold"),
+        axis.title = element_text(size = 9), axis.title.x = element_text(vjust= -2 ), axis.title.y = element_text(vjust = 5), 
+        axis.text = element_text(size = 6)) + labs(title = "") +
+  geom_point(aes(x = fit4$summary[,1], y = (rep(1:25))),
+             fill = "white", stroke = 1, pch = 21, size = 1.5, colour = "#addd8e")
 
 p4
 
-
-all <- ggarrange(p3, p1, p4, p2,
+all4 <- ggarrange(p1, p3, p2, p4,
           ncol = 2, nrow = 2) 
 
+all4 <- all4 + labs(tag = "A") + theme(plot.tag = element_text(face = "bold", size = 18, vjust = 1.2, hjust = -0.5), plot.margin = unit(c(0.1,0,0,0),"cm"))
+all4
+all <- ggarrange(all4, p, ncol = 2, nrow = 1, widths = c(1.5,1))
 all
 
-ggsave(filename = "FINAL_SlopeDifferences.png", device = "png", plot = all,
-       width = 30, height = 30, units = "cm")
+ggsave(filename = "FIGURE 5_FINAL.tiff", device = "tiff", plot = all,
+       width = 5600, height = 3000, units = "px", dpi = 600, bg = "white")
 
 ### END OF CODE ---------------------------------------------------------------
 
